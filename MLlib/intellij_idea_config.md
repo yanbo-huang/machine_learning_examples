@@ -1,22 +1,21 @@
+intellij idea configuration for spark app:
+defult: spark is already in your computer
+1. scala plugin 
+2. at the root directory of spark, run "sbt/sbt gen-idea"
+3. create a scala project and write code in a scala script
+4. file->project structure-> library->+
+    choose java
+    browse : spark->assembly->target->scala-2.xx->spark-assembly-xxx-hadoopxxx.jar
+    choose ok
+    choose file type: javadocs, classes, jar
+5.  in the scala script: 
+
     val conf = new SparkConf().setAppName("test").setMaster("local")
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     val sc = new SparkContext(conf)
-
-   ##test
     var t0 = System.currentTimeMillis
 
     // Main code here ////////////////////////////////////////////////////
-    val count = sc.parallelize(1 to 5000000).map{i =>
-      val x = Math.random()
-      val y = Math.random()
-      if(x*x + y*y < 1) 1 else 0
-    }.reduce(_+_)
-    println("---------------------------------------")
-    println(4.0*count/5000000)
-    println("---------------------------------------")
-
-
-
 
     val et = (System.currentTimeMillis - t0) / 1000
     val mins = et / 60
