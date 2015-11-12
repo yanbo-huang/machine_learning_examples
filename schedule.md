@@ -16,3 +16,9 @@
 1. install spark 1.5.0 or higher version
 2. learning basical spark knowlege
 3. get know about scala MLlib
+
+##2015.11.11 Process
+
+1. Built Scala + Spark development environment.
+2. Finished first machine learning algorithm -- linear regression with MLlib on Spark.
+3. After class each group menber build 1-2 algorithms on spark and discuss next wendesday.
