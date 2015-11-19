@@ -74,5 +74,51 @@ predict(lm_model, test.data)
 
 Result is 70.3558.
 
+####Principle Component Analysis
+
+Load data:
+
+```r
+data <- read.csv("Downloads/MachineLearning-master/Example Data/PCA_Example_1.csv", stringsAsFactors=F)
+data$Date = as.Date(data$Date)
+```
+
+Transform data structure into Date, Stock1, Stock2...(group by date):
+
+```r
+data <- reshape(data, idvar = "Date", timevar = "Stock", direction = "wide")
+```
+
+Sort data by date:
+
+```r
+data <- arrange(data, Date)
+```
+
+Train a principle model:
+
+```r
+pca.model = prcomp(data[,2:ncol(data)])
+PC1 <- pca.model$x[,"PC1"]
+```
+
+Add a date duration column for visualize data:
+
+```r
+duration <- 1:nrow(PC1)
+PC1 <- as.data.frame(PC1)
+duration <- as.data.frame(duration)
+PC1 <- cbind(PC1, duration)
+colnames(PC1) <- c("feature", "duration")
+```
+
+Visualize data:
+
+```r
+pc1_plot <- qplot(PC1$duration, PC1$feature)
+```
+
+![pca](imgs/pca.png)
+
 
 
