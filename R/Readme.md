@@ -147,5 +147,18 @@ Normalized:
 
 ![pca3](imgs/pca3.png)
 
+####Support Vector Machine
+
+Firstly, read data from csv:
+
+```r
+train.data <- read.csv("Downloads/MachineLearning-master/Example Data/SVM_Example_1.csv", stringsAsFactors=F)
+```
+
+Take a look at our data:
+
+![svm1](imgs/svm1.png)
+
+Linear classifier will not work. Instead, we use SVM & Guassian Kernel.
 
 
