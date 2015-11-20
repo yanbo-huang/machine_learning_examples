@@ -120,5 +120,32 @@ pc1_plot <- qplot(PC1$duration, PC1$feature)
 
 ![pca](imgs/pca.png)
 
+The data in plot is exactily the same as Mike's blog, but the sequence is a bit different.
+
+Verify data:
+
+```r
+#verify data path
+data.verify <- read.csv("Downloads/MachineLearning-master/Example Data/PCA_Example_2.csv", stringsAsFactors = F)
+data.verify$Date <- as.Date(data.verify$Date)
+#subset data, only contains 2 columns, date and close
+data.verify <- data.verify[,c(1,5)]
+#sort by date
+data.verify <- arrange(data.verify, Date)
+#add duration
+duration.verify <- 1:nrow(data.verify)
+duration.verify <- as.data.frame(duration.verify)
+data.verify <- cbind(duration.verify, data.verify)
+qplot(data.verify$duration.verify, data.verify$Close)
+```
+
+Un-normalized:
+
+![pca2](imgs/pca2.png)
+
+Normalized:
+
+![pca3](imgs/pca3.png)
+
 
 
