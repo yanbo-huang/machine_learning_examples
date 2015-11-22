@@ -31,3 +31,9 @@ Probability Monad: Reimplement Mike's blog samples using several different ML li
 1. Mainly finished SVM, PCA and Naive Bayes on MLlib.
 2. Started to write simple ML code with statistical language *R*.
 3. Decided to meet at Sunday and have a discussion on Python, *sclikit learn*.
+
+##2015.11.22 Process
+
+1. Finished built scikit learn develop environment.
+2. Finished linear regression with scikit-learn.
+3. Finished SVM with R.

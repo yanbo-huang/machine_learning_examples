@@ -243,3 +243,6 @@ Reference:
 3. [SVM example with Iris Data in R](http://rischanlab.github.io/SVM.html)
 4. [Multiple graphs on one page (ggplot2)](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/)
 
+####K Nearst Neighbour
+
+
