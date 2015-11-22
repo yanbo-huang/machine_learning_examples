@@ -236,8 +236,6 @@ Compare original with svm-classified data:
 
 ![svm5](imgs/svm5.png)
 
-
-
 Reference:
 
 1. [Data Mining Algorithms In R/Classification/SVM](https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Classification/SVM)
