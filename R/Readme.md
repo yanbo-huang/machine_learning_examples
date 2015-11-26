@@ -226,7 +226,7 @@ predictions <- melt(df, id.vars = c("x", "y"))
 
 And visualize:
 
-```python
+```r
 ggplot(predictions, aes(x, y, color = factor(value))) + geom_point()
 ```
 
@@ -245,4 +245,33 @@ Reference:
 
 ####K Nearst Neighbour
 
+First step, load data from CSV
+
+```r
+knn.data <- read.csv("Downloads/MachineLearning-master/Example Data/KNN_Example_1.csv")
+```
+
+Visualize what the data looks like:
+
+```r
+library(ggplot2)
+ggplot(data) + geom_point(aes(X, Y, color = Label))
+```
+
+![knn1](imgs/knn1.png)
+
+In the plot, blue and red points mixed in the area *3<x<5* and *5<y<7.5*. From Mike's blog:
+
+>Since the groups are mixed the K-NN algorithm is a good choice, as fitting a linear decision boundary would cause a lot of false classifications in the mixed area.
+
+####Text Regression
+
+Load data and get subset of original data:
+
+```r
+text.data <- read.csv("Downloads/MachineLearning-master/Example Data/TextRegression_Example_1.csv")
+text.data <- text.data[,c(2,4,5)]
+```
+
+We now have the title, rank and long description of the top 100 selling books from O'Reilly.
 
