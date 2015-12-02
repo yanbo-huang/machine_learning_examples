@@ -37,3 +37,10 @@ Probability Monad: Reimplement Mike's blog samples using several different ML li
 1. Finished built scikit learn develop environment.
 2. Finished linear regression with scikit-learn.
 3. Finished SVM with R.
+
+##2015.12.01 Process
+
+1. Finished Text Regression with R
+2. Started KNN with R
+3. Finnished SVM, Linear Regression, KNN with Scikit Learn.
+4. Finished Linear Regression with Graphlab.
