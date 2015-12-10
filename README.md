@@ -11,8 +11,7 @@ Probability Monad: Reimplement Mike's blog samples using several different ML li
            graphlab create
 3. Go:    Golearn
 4. R
-5. Haskell: Hlearn
-6. C++:     Shogun
+5. C++:     Shogun
 
 **tasks before wednesday(11/04/2015)**
 
@@ -44,3 +43,11 @@ Probability Monad: Reimplement Mike's blog samples using several different ML li
 2. Started KNN with R
 3. Finnished SVM, Linear Regression, KNN with Scikit Learn.
 4. Finished Linear Regression with Graphlab.
+
+##2015.12.10 Process
+
+1. Finished Naive Bayes of R and Scikit Learn.
+2. Started to write PCA, SVM with Scikit Learn.
+3. Started algorithms with Graphlab Create.
+4. Started to implement a recommend system with Python.
+5. Decide to finish Scikit Learn, Graphlab Create, R packages and recommend system before 2015-12-25.
