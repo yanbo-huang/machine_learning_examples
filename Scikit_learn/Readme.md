@@ -7,7 +7,7 @@ data=pd.read_csv(dataLocation)
 ```
 Data visualization
 
-![scatter plot](imgs/lr1.jpg)
+![scatter plot](imgs/lr1.jpg=100x100)
 
 Transfering gender property to numeric data, _inch_ to _cm_ and _bound_ to _kg_
 ```python
