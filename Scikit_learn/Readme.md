@@ -5,7 +5,8 @@ Importing and reading csv data
 dataLocation=r'C:\Users\Yanbo Huang\Desktop\Python exercises\OLS_Regression_Example_3.csv'
 data=pd.read_csv(dataLocation)
 ```
-Data visualization
+Data visualization  
+
 <img src="imgs/lr1.jpg" height="300" >
 
 
@@ -39,6 +40,7 @@ predictions:
 ## Support Vector Machine
 ### SVM with Gaussian Kernal
 Data visualization:
+
 
 <img src="imgs/svm1.jpg" height="300" >
 
@@ -95,6 +97,7 @@ The **df** in the code stands for FCR table with index in **C** and **sigma**
 (**Note**: We got the table based on _CV dataset_ instead of _training dataset_)  
 Here we got :  
 
+
 <img src="imgs/svm2.jpg" height="200">
 > minimum false classified ratio in CV dataset:  **5.0%**  
 
@@ -111,12 +114,14 @@ Here we got :
 ### Polynomial Kernel
 Data visualization  
 
-<img src="imgs/svm3.jpg" height="300">
+
+<img src="imgs/svm3.jpg" height="300">  
+
 <img src="imgs/svm4.jpg" height="300">
 
 Using gaussian kernal we got:
 
-<img src="imgs/svm5.jpg" height="200">
+<img src="imgs/svm5.jpg" height="300">
 
 > minimum false classified ratio in test dataset:**19.16%** 
 
@@ -144,10 +149,50 @@ df = pd.DataFrame(FCR, index=Cs, columns=degrees)
 df.columns.name='C,d->'
 ```
 Here we got the FCR table and test error:  
-<img src="imgs/svm6.jpg" height="200">
+<img src="imgs/svm6.jpg" height="300">
 > minimum false classified ratio in test dataset:**0.0%** 
 
-As we can see, the polynomial kernel is superior to gaussian kernel in this case.
+As we can see, the polynomial kernel is superior to gaussian kernel in this case.  
+
+## Principal component analysis  
+
+Get the example data:  
+```python
+dataLocation=r'C:\Users\Yanbo Huang\Desktop\Python exercises\PCA_Example_1.csv'
+data=pd.read_csv(dataLocation)  
+```
+Reshape the data into 24 stocks 
+
+```python
+df=data.pivot(index='Date', columns='Stock', values='Close')
+```
+Train the PCA model which merges the 24 features into 1 single feature
+
+```python
+pca=PCA(n_components=1)
+outputData=pca.fit_transform(df)
+```
+Plot the results,with the feature value on the vertical axis and the individual days on the horizontal axis.
+<img src='imgs\pca1.jpg' height='300'>
+
+Load Dow Jones Index for verification
+
+```python
+DJIdataLocation=r'C:\Users\Yanbo Huang\Desktop\Python exercises\PCA_Example_2.csv'
+DJI=pd.read_csv(DJIdataLocation)
+#sort data by date
+DJI=DJI[['Date','Close']].sort('Date')['Close']
+```
+Normolize data
+
+```python
+DJI=(DJI-DJI.mean())/(DJI.max()-DJI.min())
+pcaData=(outputData-outputData.mean())/(outputData.max()-outputData.min())
+```
+
+Plot both pac outputdata and DJI for comparision
+
+<img src='imgs\pca2.jpg' height='300'>
 
 
 
