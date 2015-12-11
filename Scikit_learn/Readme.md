@@ -7,7 +7,7 @@ data=pd.read_csv(dataLocation)
 ```
 Data visualization
 
-![scatter plot](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/lr1.jpg?token=ALUsnLiC34GZooFQnLFBiZVhriTokN9hks5WaGvpwA%3D%3D)
+![scatter plot](imgs/lr1.jpg)
 
 Transfering gender property to numeric data, _inch_ to _cm_ and _bound_ to _kg_
 ```python
@@ -40,7 +40,7 @@ predictions:
 ### SVM with Gaussian Kernal
 Data visualization:
 
-![scatter plot](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/svm1.jpg?token=ALUsnOSvQVy1UvVlCp3q4fKWe9BHD9Piks5WadlfwA%3D%3D)
+![scatter plot](imgs/svm1.jpg)
 
 Aparently, we can not use linear SVM classifier to solve this problem. One alternative way is to use Gaussian kernal to map the original data into some complex high dimensional space to make it sparateble.  
 
@@ -95,7 +95,7 @@ The **df** in the code stands for FCR table with index in **C** and **sigma**
 (**Note**: We got the table based on _CV dataset_ instead of _training dataset_)  
 Here we got :  
 
-![FCR table](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/svm2.jpg?token=ALUsnFMxCGcY8NYrcN_Qf_mBVLXQTMyfks5WadmZwA%3D%3D)  
+![FCR table](imgs/svm2.jpg)  
 > minimum false classified ratio in CV dataset:  **5.0%**  
 
 Then using model parameters which resulting this **5.0%** test error to train the model and make predication on our test dataset:
@@ -111,12 +111,12 @@ Here we got :
 ### Polynomial Kernel
 Data visualization  
 
-![training data](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/svm3.jpg?token=ALUsnFLoLgfrKqRjffehQW1vIIivcrt2ks5WadnFwA%3D%3D)  
-![testing data](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/svm4.jpg?token=ALUsnB2QoBLKQi-fmtoT6inXfgcTJMdIks5Wadn9wA%3D%3D)
+![training data](imgs/svm3.jpg)  
+![testing data](imgs/svm4.jpg)
 
 Using gaussian kernal we got:
 
-![FCR table 1](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/svm5.jpg?token=ALUsnNDGQ2yaGoKRqFo1CDxykXl_lOB5ks5WadoswA%3D%3D)
+![FCR table 1](imgs/svm5.jpg)
 
 > minimum false classified ratio in test dataset:**19.16%** 
 
@@ -144,7 +144,7 @@ df = pd.DataFrame(FCR, index=Cs, columns=degrees)
 df.columns.name='C,d->'
 ```
 Here we got the FCR table and test error:  
-![FCR table 2](https://raw.githubusercontent.com/fptudelft/MachineLearningSamples/master/Scikit_learn/imgs/svm6.jpg?token=ALUsnG4m8W6CV1L3QzKXH0Kruv3jabG5ks5WadpnwA%3D%3D)
+![FCR table 2](imgs/svm6.jpg)
 > minimum false classified ratio in test dataset:**0.0%** 
 
 As we can see, the polynomial kernel is superior to gaussian kernel in this case.
