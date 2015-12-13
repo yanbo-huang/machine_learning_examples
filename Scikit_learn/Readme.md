@@ -1,4 +1,13 @@
 # Machine learning using Scikit-learn
+This Readme file illustrates how to implement several machine learning algorithms using Scikit-learn based on the [Mike's blog](https://xyclade.github.io/MachineLearning/).
+
+* [Linear Regression](#linear-regression)
+* [Support Vector Machine](#support-vector-machine)
+  * [Gaussian Kernel](#gaussian-kernel)
+  * [Polynomial Kernel](#polynomial-kernel)
+* [Principal Component Analysis](#principal-component-analysis)
+
+
 ## Linear Regression
 Importing and reading csv data
 ```python
@@ -38,7 +47,7 @@ predictions:
 [ **79.1453856**, **70.35580396**]
 
 ## Support Vector Machine
-### SVM with Gaussian Kernal
+### Gaussian Kernel
 Data visualization:
 
 
@@ -98,7 +107,7 @@ The **df** in the code stands for FCR table with index in **C** and **sigma**
 Here we got :  
 
 
-<img src="imgs/svm2.jpg" height="200">
+<img src="imgs/svm2.jpg" height="300">
 > minimum false classified ratio in CV dataset:  **5.0%**  
 
 Then using model parameters which resulting this **5.0%** test error to train the model and make predication on our test dataset:
