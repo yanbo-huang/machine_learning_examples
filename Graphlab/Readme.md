@@ -103,3 +103,51 @@ From result we can see that point [5.3,4.3] was predicted as 0 in 4 out of 5 tim
 
 ![knn-unknownpoint](img/knn2.png)
 
+
+###Logistic Regression
+
+As *Graphlab Create* is still under construction, this library do not provide any other classifier in Mike's blog. So we implement some available algorithms with *Graphlab*, the first one is *Logistic Regression*.
+
+The data we used is [IRIS]() data set from [UCI](), contains several kinds of flowers. We built a multiple logistic regression model to seperate these flowers.
+
+First of all, take a look of our data:
+
+![logistic](img/logistic.png)
+
+Import graphlab and load data:
+
+```python
+import graphlab
+iris_data = graphlab.SFrame.read_csv("Desktop/Q1 Course/FP/MachineLearningSamples/extradata/iris.csv")
+```
+
+Seperate IRIS dataset into train and test data:
+
+```python
+train_data, test_data = iris_data.random_split(0.5, seed = 1)
+```
+
+Train a *Logistic Regression* classifier:
+
+```python
+model = graphlab.logistic_classifier.create(train_data, target = "species", features=['sepal length', 'sepal width', 'petal length', 'petal width'])
+```
+
+Predict based on test data:
+
+```python
+predictions = model.predict(test_data)
+predictions
+```
+
+By print predictions, we are able to predict test data with trained model.
+
+Evaluate out model:
+
+```python
+res = model.evaluate(test_data)
+res['accuracy']
+res['confusion_matrix']
+```
+
+The prediction accuracy is 92.3%, and it is clear that Iris-virginica and Iris-versicolor is likely to be misclassified.
