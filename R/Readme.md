@@ -243,6 +243,43 @@ Reference:
 3. [SVM example with Iris Data in R](http://rischanlab.github.io/SVM.html)
 4. [Multiple graphs on one page (ggplot2)](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/)
 
+####Support Vector Machine -- Polynomial Kernel
+
+Fisrt, take a look of our train & test data:
+
+```r
+train.data = read.csv("Downloads/MachineLearning-master/Example Data/SVM_Example_2.csv", stringsAsFactors = F)
+test.data = read.csv("Downloads/MachineLearning-master/Example Data/SVM_Example_2_Test_data.csv", stringsAsFactors = F)
+ggplot(train.data) + geom_line(aes(x = x, y = y, color = factor(label)))
+ggplot(test.data) + geom_line(aes(x = x, y = y, color = factor(label)))
+```
+
+![svm-poly1](imgs/svm-poly1.png)
+![svm-poly2](imgs/svm-poly2.png)
+
+Use *polynomial* model:
+
+```r
+model <- svm(label~., data = train.data, kernel = "polynomial", degree = 3)
+pred <- predict(model, train.data[,1:2])
+table(pred, train.data[,3])
+```
+
+turn model with best gamma and cost:
+
+```r
+sigma <- c(0.001, 0.01, 0.1, 0.2, 0.5, 1.0, 2.0, 3.0, 10.0)
+gamma <- 1/(sigma * sigma *2)
+cost <- c(0.001, 0.01, 0.1, 0.2, 0.5,1.0, 2.0, 3.0, 10.0, 100.0)
+tuned <- tune.svm(label~., data = train.data, gamma = gamma, cost = cost)
+summary(tuned)
+```
+
+We are able to know that best performance(minimum error) is 0.
+
+![svm-poly3](imgs/svm-poly3.png)
+
+
 ####K Nearst Neighbour
 
 First step, load data from CSV
@@ -255,7 +292,7 @@ Visualize what the data looks like:
 
 ```r
 library(ggplot2)
-ggplot(data) + geom_point(aes(X, Y, color = Label))
+ggplot(knn.data) + geom_point(aes(X, Y, color = Label))
 ```
 
 ![knn1](imgs/knn1.png)
@@ -264,14 +301,41 @@ In the plot, blue and red points mixed in the area *3<x<5* and *5<y<7.5*. From M
 
 >Since the groups are mixed the K-NN algorithm is a good choice, as fitting a linear decision boundary would cause a lot of false classifications in the mixed area.
 
-####Text Regression
-
-Load data and get subset of original data:
+Firstly, split data into train and test data with:
 
 ```r
-text.data <- read.csv("Downloads/MachineLearning-master/Example Data/TextRegression_Example_1.csv")
-text.data <- text.data[,c(2,4,5)]
+sub <- sample(2, nrow(knn.data), replace=TRUE, prob=c(0.5, 0.5))
+data.train <- knn.data[sub == 1, 1:2]
+data.test <- knn.data[sub == 2, 1:2]
+data.train.label <- knn.data[sub == 1, 3]
+data.test.label <- knn.data[sub == 2, 3]
 ```
 
-We now have the title, rank and long description of the top 100 selling books from O'Reilly.
+Train a knn model
+
+```r
+knn.pred <- knn(train = data.train, test = data.test, cl = data.train.label, k = 3)
+```
+
+Compare the predict data and real label of test data:
+
+```r
+knn.pred.dataframe <- as.data.frame(knn.pred)
+knn.test.label <- as.data.frame(data.test.label)
+knn.accuracy <- cbind(knn.pred.dataframe, knn.test.label)
+```
+
+Predict a unknown point(5.3,4.3)
+
+```r
+d1 <- 5.3
+d2 <- 4.3
+unknown <- cbind(d1, d2)
+colnames(unknown) <- c("X", "Y")
+knn.pred <- knn(train = data.train, test = unknown, cl = data.train.label, k = 3)
+```
+
+Result is 0.
+
+
 
