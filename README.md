@@ -8,10 +8,9 @@ Probability Monad: Reimplement Mike's blog samples using several different ML li
 
 1. scala: MLlib
 2. python: scikit learn 
-           graphlab create
-3. Go:    Golearn
-4. R
-5. C++:     Shogun
+3. graphlab create
+4. Go:    Golearn
+5. R
 
 **tasks before wednesday(11/04/2015)**
 
