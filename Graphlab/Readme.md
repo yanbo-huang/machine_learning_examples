@@ -54,3 +54,52 @@ lm_model.predict(predict_data)
 ```
 
 ![linear-ipython-3](img/ipython3.png)
+
+###KNN
+
+Firstly, import graphlab library and load data:
+
+```python
+import graphlab
+knn_data = graphlab.SFrame.read_csv("/Users/wbcha/Downloads/MachineLearning-master/Example Data/KNN_Example_1.csv")
+```
+
+Split data into train_data and test_data (2-fold):
+
+```python
+train_data, test_data = knn_data.random_split(0.5)
+```
+
+Train a k nearest neighbour model:
+
+```python
+knn_model = graphlab.nearest_neighbors.create(train_data, features=['X', 'Y'], label='Label', distance='euclidean')
+```
+
+Model summary:
+
+```python
+knn_model.summary()
+```
+
+Predict for test data and an unknownpoint:
+
+```python
+res = knn_model.query(test_data, label= 'Label', k = 3)
+```
+
+The predict result and distance can be visualized on Ipythonnotebook. Column *query_label* and *reference_label* represent predicted result and label of test_data respetively.
+
+![knn1](img/knn.png)
+
+Make a unknown point with *Graphlab SFRAME* and evaluate:
+
+```python
+queries = graphlab.SFrame({'X': [5.3], 'Y': [4.3]})
+knn_model.query(queries)
+```
+
+From result we can see that point [5.3,4.3] was predicted as 0 in 4 out of 5 times.
+
+![knn-unknownpoint](img/knn2.png)
+
