@@ -151,3 +151,35 @@ res['confusion_matrix']
 ```
 
 The prediction accuracy is 92.3%, and it is clear that Iris-virginica and Iris-versicolor is likely to be misclassified.
+
+###Kmeans
+
+This time, we still use *Iris* dataset without label column, try to do some cluster analysis and seperate flowers using unsupervised algorithm -- Kmeans.
+
+As we have already know that the flower can be seperated into 3 groups, so we set k = 3.
+
+Firstly, import graphlab and load iris data:
+
+```python
+import graphlab
+iris_data = graphlab.SFrame.read_csv("Desktop/Q1 Course/FP/MachineLearningSamples/extradata/iris.csv")
+```
+
+Remove label column so we can turn the problem into a unsupervised problem:
+
+```python
+iris_data = iris_data.remove_column('species')
+```
+
+Train a *Kmeans* model, set initial clusters equal to 3:
+
+```python
+model = graphlab.kmeans.create(iris_data, num_clusters = 3)
+```
+
+Get the cluster result:
+
+```python
+cluster_result = model.cluster_id
+cluster_result
+```
