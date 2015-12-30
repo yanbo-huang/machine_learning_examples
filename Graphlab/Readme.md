@@ -108,7 +108,7 @@ From result we can see that point [5.3,4.3] was predicted as 0 in 4 out of 5 tim
 
 As *Graphlab Create* is still under construction, this library do not provide any other classifier in Mike's blog. So we implement some available algorithms with *Graphlab*, the first one is *Logistic Regression*.
 
-The data we used is [IRIS]() data set from [UCI](), contains several kinds of flowers. We built a multiple logistic regression model to seperate these flowers.
+The data we used is [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) data set from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris), contains several kinds of flowers. We built a multiple logistic regression model to seperate these flowers.
 
 First of all, take a look of our data:
 
