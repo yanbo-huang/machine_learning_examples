@@ -1,4 +1,6 @@
-#Intellij idea configuration for spark app:
+###Machine Learning with Apache Spark
+
+###Intellij idea configuration for spark app:
 
 *defult: spark is already in your computer*
 
