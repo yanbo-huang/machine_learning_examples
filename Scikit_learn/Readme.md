@@ -203,6 +203,23 @@ Plot both pac outputdata and DJI for comparision
 
 <img src='imgs\pca2.jpg' height='300'>
 
+##Naive Bayes
+Run the code several times and change amount of features to take, we get the following results:
+###Ham Result
+| Amount of Features to take        | Ham (Correct)           | Spam  |
+| ----------------------------------|:-----------------------:| -----:|
+| 50                                | 95.90%                  | 4.10% |
+| 100                               | 97.34%                  | 2.66% |
+| 200                               | 98.06%                  | 1.94% |
+| 400                               | 98.49%                  | 1.51% |
+###Spam Result
+| Amount of Features to take        | Ham (Correct)           | Spam  |
+| ----------------------------------|:-----------------------:| -----:|
+| 50                                | 75.32%                  | 24.68%|
+| 100                               | 84.24%                  | 15.76%|
+| 200                               | 86.04%                  | 13.96%|
+| 400                               | 90.29%                  | 9.71% |
+
 
 
 
