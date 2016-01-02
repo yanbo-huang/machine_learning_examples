@@ -47,21 +47,22 @@ Replace Male and Female with 1 and 2:
 
 ```scala
 val dataFinal = dataNewMetrics.map{s=>
-      var sexual = 2
-      if(s._1 equals "\"Male\""){
-        sexual = 1
-      }
-      (sexual, s._2, s._3)
+    var sexual = 2
+    if(s._1 equals "\"Male\""){
+    sexual = 1
     }
+    (sexual, s._2, s._3)
+}
 ```
 
 Generate train data into **LabeledPoint** format
 
 ```scala
 val trainData = dataFinal.map{ s =>
-//Label Point, construct a matrix, first arg is label to be predicted,
-//second argument is a vector, argument type must be double
-LabeledPoint(s._3, Vectors.dense(s._1, s._2))}.cache()
+    //Label Point, construct a matrix, first arg is label to be predicted,
+    //second argument is a vector, argument type must be double
+    LabeledPoint(s._3, Vectors.dense(s._1, s._2))
+}.cache()
 ```
 
 Train model using function **LinearRegressionWithSGD**, in **MLlib**, we need to tune parameters(such as learning rate, iteration times) ourselves, we tried different learning rate from 1 decreased to 0.0003, finnaly got a relative low train error 10.73:
