@@ -1,6 +1,3 @@
-/**
-  * Created by yuliang on 10/11/15.
-  */
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
@@ -15,60 +12,55 @@ object test
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     val sc = new SparkContext(conf)
     var t0 = System.currentTimeMillis
-    // Main code here //
-    val csvPath = "/Users/yuliang/Documents/MachineLearning-master/ExampleData/OLS_Regression_Example_3.csv"
-    val data = sc.textFile(csvPath)
-
-    //split data into train/test
-    val splitData = data.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2)))
-    val splits = splitData.randomSplit(Array(0.6, 0.4), seed = 11L)
-    val training = splits(0)
-    val test = splits(1)
-
-    //training data: male and female
-    val train_maleData = training.filter(s =>(s._1 == "Male")).map(s=>(s._2, s._3))
-    val train_femaleData = training.filter(s =>(s._1 == "Female")).map(s=>(s._2, s._3))
-
-    //train data model
-    val train_maleData_used = train_maleData.map { s =>
-      val height = s._1
-      val weight = s._2
-      LabeledPoint(weight.toDouble, Vectors.dense(height.toDouble))
+    // Main code start //
+    val csvPath = "/Users/wbcha/Downloads/MachineLearning-master/Example Data/OLS_Regression_Example_3.csv"
+    val rawData = sc.textFile(csvPath)
+    //remove the first line (csv head)
+    val dataWithoutHead = rawData.mapPartitionsWithIndex{(idx, iter) => if (idx == 0) iter.drop(1) else iter}
+    //split comma between string and transform rawdata into RDD
+    //Since the data is in US metrics
+    //inch and pounds we will recalculate this to cm and kilo's
+    val dataNewMetrics = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1).toDouble * 2.54, s.split(",")(2).toDouble * 0.45359237))
+    //Replace male with 1 and female with 2
+    val dataFinal = dataNewMetrics.map{s=>
+      var sexual = 2
+      if(s._1 equals "\"Male\""){
+        sexual = 1
+      }
+      (sexual, s._2, s._3)
+    }
+    val trainData = dataFinal.map{ s =>
+      //Label Point, construct a matrix, first arg is label to be predicted,
+      //second argument is a vector, argument type must be double
+      LabeledPoint(s._3, Vectors.dense(s._1, s._2))
     }.cache()
-
-    val train_femaleData_used = train_femaleData.map{ s =>
-      val height = s._1
-      val weight = s._2
-      LabeledPoint(weight.toDouble, Vectors.dense(height.toDouble))
-    }.cache()
-
-    val stepsize = 0.001
-    val numIterations = 2000
-    val model_male = LinearRegressionWithSGD.train(train_maleData_used,numIterations,stepsize)
-    val model_female = LinearRegressionWithSGD.train(train_femaleData_used,numIterations,stepsize)
-
-
-    //test data: male and female
-    val test_maleData = test.filter(s=>(s._1 == "Male"))
-    val test_femaleData = training.filter(s =>(s._1 == "Female"))
-
+    trainData.take(8000).foreach(println)
+    //we tried different step size
+    //first tried 1 and 0.001, 1 returns Nan and 0.001 returns Nan
+    //then we tried 0.001 model error still very large
+    //tried 0.0005 model error is 11
+    //tried 0.0004 model error is 10.73
+    //tried 0.0003 model remains to be 10.73
+    val stepSize = 0.0003
+    val numIterations = 10000
+    val model = LinearRegressionWithSGD.train(trainData, numIterations, stepSize)
     // Evaluate model on training examples and compute training error
-    val valuesAndPreds_1 = train_maleData_used.map { s =>
-      val prediction = model_male.predict(s.features)
+    val valuesAndPreds = trainData.map { s =>
+      val prediction = model.predict(s.features)
       (s.label, prediction)
     }
-    valuesAndPreds_1.take(10).foreach(println)
+    val MSE = valuesAndPreds.map{case(v, p) => math.pow((v - p), 2)}.mean()
+    val ModelError = math.sqrt(MSE)
 
-    val valuesAndPreds_2 = train_femaleData_used.map { s =>
-      val prediction = model_female.predict(s.features)
-      (s.label, prediction)
-    }
-    valuesAndPreds_2.take(10).foreach(println)
+    println("Model Error = " + ModelError)
 
-    val MSE_1 = valuesAndPreds_1.map{case(v, p) => math.pow((v - p), 2)}.mean()
-    val MSE_2 = valuesAndPreds_1.map{case(v, p) => math.pow((v - p), 2)}.mean()
-    println("training male Mean Squared Error = " + MSE_1)
-    println("training female Mean Squared Error = " + MSE_2)
+    val testdata_male = Vectors.dense(1.0, 170.0)
+    val testdata_female = Vectors.dense(2.0, 170.0)
+    println("------------------------")
+    println("Male, height 170 is predicted to be:" + model.predict(testdata_male))
+    println("Female, height 170 is predicted to be:" + model.predict(testdata_female))
+    println("------------------------")
+    
     // Main code end //
 
     val et = (System.currentTimeMillis - t0) / 1000
