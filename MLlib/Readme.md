@@ -1,6 +1,6 @@
 ###Machine Learning with Apache Spark
 
-###Intellij idea configuration for spark app:
+####Intellij idea configuration for spark:
 
 *defult: spark is already in your computer*
 
@@ -25,4 +25,57 @@
     val mins = et / 60
     val secs = et % 60
     println( "{Time taken = %d mins %d secs}".format(mins, secs) )
+```
+
+####Linear Regression
+
+Load data from csv file and remove the first row:
+
+```scala
+val csvPath = "/Users/wbcha/Downloads/MachineLearning-master/Example Data/OLS_Regression_Example_3.csv"
+val rawData = sc.textFile(csvPath)
+val dataWithoutHead = rawData.mapPartitionsWithIndex{(idx, iter) => if (idx == 0) iter.drop(1) else iter}
+```
+
+Split data with comma and transformation to US metrics:
+
+```scala
+val dataNewMetrics = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1).toDouble * 2.54, s.split(",")(2).toDouble * 0.45359237))
+```
+
+Replace Male and Female with 1 and 2:
+
+```scala
+val dataFinal = dataNewMetrics.map{s=>
+      var sexual = 2
+      if(s._1 equals "\"Male\""){
+        sexual = 1
+      }
+      (sexual, s._2, s._3)
+    }
+```
+
+Generate train data into **LabeledPoint** format
+
+```scala
+val trainData = dataFinal.map{ s =>
+//Label Point, construct a matrix, first arg is label to be predicted,
+//second argument is a vector, argument type must be double
+LabeledPoint(s._3, Vectors.dense(s._1, s._2))}.cache()
+```
+
+Train model using function **LinearRegressionWithSGD**, in **MLlib**, we need to tune parameters(such as learning rate, iteration times) ourselves, we tried different learning rate from 1 decreased to 0.0003, finnaly got a relative low train error 10.73:
+
+```scala
+val stepSize = 0.0003
+val numIterations = 10000
+val model = LinearRegressionWithSGD.train(trainData, numIterations, stepSize)
+// Evaluate model on training examples and compute training error
+val valuesAndPreds = trainData.map { s =>
+  val prediction = model.predict(s.features)
+  (s.label, prediction)
+}
+val MSE = valuesAndPreds.map{case(v, p) => math.pow((v - p), 2)}.mean()
+val ModelError = math.sqrt(MSE)
+println("Model Error = " + ModelError)
 ```
