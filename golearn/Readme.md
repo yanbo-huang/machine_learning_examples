@@ -2,7 +2,10 @@
 
 This Readme file illustrates how to implement several machine learning algorithms using golang's golearn library based on the [Mike's blog](https://xyclade.github.io/MachineLearning/).
 
-## Enviroment configurations
+* [Enviroment Configurations](#enviroment-configurations)
+* [K-Nearest Neighbors](#k-nearest-neighbors)
+## Enviroment Configurations
+
 1. Go Enviroment
 Please refer to [this blog](https://github.com/astaxie/build-web-application-with-golang/blob/master/en/01.1.md) to  install and configure your own Go development environment.It is much easier to use the second method *Using the standard installation packages*.
 **Note:** Remember to write your *GOPATH*,*GOROOT*,and current *PATH* to your **bashrc**
