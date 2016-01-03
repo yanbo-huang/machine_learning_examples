@@ -86,7 +86,7 @@ println("Model Error = " + ModelError)
 
 ####Logistic Regression
 
-As apache MLlib is under construction, they do not provide kernel svm, knn. So we'll implement some existing algorithms with apache spark, first one is Logistic Regression use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
+As apache MLlib is under construction, they do not provide kernel svm, knn. So we'll implement some existed algorithms with apache spark, first one is Logistic Regression use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
 
 First of all, import data and remove the head line:
 
@@ -224,6 +224,48 @@ val metrics = new MulticlassMetrics(predictionAndLabels)
 val precision = metrics.precision
 println("Precision = " + precision)
 ```
+
+###Kmeans
+
+We continue implement existed algorithms with apache spark, this one is **K-means** use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
+
+As Kmeans is an unsupervised machine learning algorithm, we drop the label column of iris dataset to group dataset.
+
+First of all, load data and remove header.
+
+```scala
+val csvPath = "/Users/wbcha/Desktop/Q1 Course/FP/MachineLearningSamples/extradata/iris.csv"
+val rawData = sc.textFile(csvPath)
+//remove the first line (csv head)
+val dataWithoutHead = rawData.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+```
+
+Split data with comma, remove the label from dataset to use kmeans:
+
+```scala
+val splitData = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2), s.split(",")(3)))
+val parsedData = splitData.map(s => Vectors.dense(s._1.toDouble, s._2.toDouble, s._3.toDouble, s._4.toDouble)).cache()
+```
+
+Train a K-means model:
+
+```scala
+val numOfClusters = 3
+val numIterations = 100
+val clusters = KMeans.train(parsedData, numOfClusters, numIterations)
+```
+
+We set **NumOfClusters** equals to 3 because we already knows that there are 3 kinds of flowers in our dataset. And of course, we tried different numIterations, as we keep increase iteration time from 100, the model error remain the same.
+
+Evaluate model error(Within Set Sum of Squared Errors):
+
+```scala
+val WSSSE = clusters.computeCost(parsedData)
+println("Within Set Sum of Squared Errors = " + WSSSE)
+```
+
+Model error equals to 78.86.
+
 
 
 
