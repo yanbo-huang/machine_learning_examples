@@ -81,7 +81,54 @@ val ModelError = math.sqrt(MSE)
 println("Model Error = " + ModelError)
 ```
 
-####PCA
+####Principal Component Analysis
+
+Load data from csv and remove the first line:
+
+```scala
+val csvPath = "/Users/wbcha/Downloads/MachineLearning-master/Example Data/PCA_Example_1.csv"
+val rawData = sc.textFile(csvPath)
+//remove the first line (csv head)
+val dataWithoutHead = rawData.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+```
+
+Split data by comma, and group by date:
+
+```scala
+val dataRdd = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2).toDouble))
+//group data by date
+val groupByDate = dataRdd.groupBy(s => s._1).sortBy(s => s._1)
+```
+
+Generate 2 RDDs, *dateTuple* and *doubleTuple*, then combine them into a new RDD.
+
+```scala
+val dateTuples = groupByDate.map(s => (s._1))
+val rawDoubleTuples = groupByDate.map(s => s._2)
+val doubleTuples = rawDoubleTuples.map(s => s.map(t => t._3))
+//combine dateTuples and doubleTuples
+val finalRdd = dateTuples.zip(doubleTuples)
+```
+
+In order to compute Principal Components, we need to construct a *RowMatrix* in spark:
+
+```scala
+val rows = finalRdd.map(s => s._2).map{line =>
+  val valuesString = line.mkString(",")
+  val values = valuesString.split(",").map(_.toDouble)
+  Vectors.dense(values)
+}
+```
+
+The following code demonstrates how to compute principal components on a RowMatrix and use them to project the vectors into a low-dimensional space:
+
+```scala
+val matrix = new RowMatrix(rows)
+val pc: Matrix = matrix.computePrincipalComponents(1)
+println("Principal components are:\n" + pc)
+```
+
+We are able to get 24 principal components.
 
 
 ####Logistic Regression
