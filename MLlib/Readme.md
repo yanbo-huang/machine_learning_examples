@@ -80,3 +80,151 @@ val MSE = valuesAndPreds.map{case(v, p) => math.pow((v - p), 2)}.mean()
 val ModelError = math.sqrt(MSE)
 println("Model Error = " + ModelError)
 ```
+
+####PCA
+
+
+####Logistic Regression
+
+As apache MLlib is under construction, they do not provide kernel svm, knn. So we'll implement some existing algorithms with apache spark, first one is Logistic Regression use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
+
+First of all, import data and remove the head line:
+
+```scala
+val csvPath = "/Users/wbcha/Desktop/Q1 Course/FP/MachineLearningSamples/extradata/iris.csv"
+val rawData = sc.textFile(csvPath)
+val dataWithoutHead = rawData.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+```
+
+Split data by *comma* and generate new RDD.
+
+```scala
+val splitData = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2), s.split(",")(3), s.split(",")(4)))
+```
+
+Because Mllib only alow double format label, so we need to replace flower species into digits, in this case, Iris-setosa -> class 1, Iris-virginica -> class 2, Iris-versicolor -> class 3.
+
+```scala
+val dataSpecies = splitData.map{s =>
+  var species = 0
+  if(s._5 equals "Iris-setosa"){
+    species = 0
+  }else if(s._5 equals "Iris-virginica"){
+    species = 1
+  }else{
+    species = 2
+  }
+  (s._1.toDouble, s._2.toDouble, s._3.toDouble, s._4.toDouble, species.toDouble)
+}
+```
+
+Then we split data into train set and test set in order to validate our model:
+
+```scala
+val splits = dataSpecies.randomSplit(Array(0.6, 0.4), seed = 11L)
+val training = splits(0)
+val test = splits(1)
+```
+
+And transform them into *LabeledPoint* format:
+
+```scala
+val passedTrainData = training.map{s =>
+  LabeledPoint(s._5, Vectors.dense(s._1, s._2, s._3, s._4))
+}
+val passedTestData = test.map{s =>
+  LabeledPoint(s._5, Vectors.dense(s._1, s._2, s._3, s._4))
+}
+```
+
+Next, we trained a logistic regression model, as we know that flowers can be grouped into 3 species, set *setNumClass* equals to 3.
+
+```scala
+val model = new LogisticRegressionWithLBFGS().setNumClasses(3).run(passedTrainData)
+```
+
+Predict label based on test data:
+
+```scala
+val predictionAndLabels = passedTestData.map { case LabeledPoint(label, features) =>
+  val prediction = model.predict(features)
+  (prediction, label)
+}
+```
+
+And finally, evaluate precision rate:
+
+```scala
+val metrics = new MulticlassMetrics(predictionAndLabels)
+val precision = metrics.precision
+println("Precision = " + precision)
+```
+
+The precision rate equals to 92.98%. This is just an implementation of Logistic Regression with Spark, if we use cross validation set and do some feature engineering work, the precision rate is likely to be larger.
+
+###Linear SVM
+
+As we said before, Spark MLlib do not provide kernel SVM yet, so we continually use sexual-height-weight(OLS_Regression_Example_3.csv) dataset, try to use Linear SVM(Large-Margin Classifier) to seperate sexual according to different weight and height.
+
+The reason why we use this dataset is that Linear-SVM on MLlib only support **Binary Classification** at the moment.
+
+First of all, load data and remove header line
+
+```scala
+val csvPath = "/Users/wbcha/Downloads/MachineLearning-master/Example Data/OLS_Regression_Example_3.csv"
+val rawData = sc.textFile(csvPath)
+//remove the first line (csv head)
+val dataWithoutHead = rawData.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+```
+
+Generate new RDD by split data with comma, then replace Male with 0, replace Female with 1:
+
+```scala
+val splitData = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2)))
+val dataSpecies = splitData.map{s =>
+  var sexual = 0
+  if(s._1 equals "\"Male\""){
+    sexual = 0
+  }else{
+    sexual = 1
+  }
+  (s._2.toDouble, s._3.toDouble, sexual.toDouble)
+}
+```
+
+Split data into train set and test set, transform then into **LabeledPoint** format:
+
+```scala
+//split data to train and test, training (60%) and test (40%).
+val splits = dataSpecies.randomSplit(Array(0.6, 0.4), seed = 11L)
+val training = splits(0)
+val test = splits(1)
+//prepare train and test data with labeled point format
+val passedTrainData = training.map { s =>
+  LabeledPoint(s._3, Vectors.dense(s._1, s._2))
+}
+val passedTestData = test.map{s =>
+  LabeledPoint(s._3, Vectors.dense(s._1, s._2))
+}
+```
+
+Train a linear-SVM model:
+
+```scala
+val numIterations = 200
+val model = SVMWithSGD.train(passedTrainData, numIterations)
+```
+
+We use 200 as iteration times because we tried 100, 200 and 250 three numbers, and get accuracy rate: 71.96%, 91.68% and 91.60% respectively. So we selected the iteration times with the best performance.
+
+Follow is the code for evaluate our model:
+
+```scala
+val metrics = new MulticlassMetrics(predictionAndLabels)
+val precision = metrics.precision
+println("Precision = " + precision)
+```
+
+
+
+
