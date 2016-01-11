@@ -93,4 +93,5 @@ fmt.Println(predictions)
 The result is:
 
 <img src="imgs/lr.jpg" height="200" >
+
 So, the prediction for Male of 170cm is 79.42kg, and the prediction for Female of 170cm is 70.40kg.
