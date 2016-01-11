@@ -61,4 +61,35 @@ Then based on this table,we generate a Overall accuracy to discribe the reliabil
 fmt.Println(evaluation.GetSummary(confusionMat))
 ```
 In this example, *Overall accuracy* is **0.9310**
+## Linear regression
 
+Since the *golearn* library didn't opitimize it's linear regression algorithm, it consumes much time to run. We can see that the length of our dataset is 10000 and we only have 2 features (gender and height), so it is reasonable for us to simply it,here we reduce the original dataset to 1000 male data and 1000 female data to decrease the running time.
+
+What's more, as there is no method to easily convert our gender feature to numeric number, we use python to change **Male** to **1** and **Female** to **0**,change **inch** to **cm** and **pound** to **kg**. We export our dataset from python as *linear regression.csv*,and *linear regression test.csv*.
+
+Load train dataset:
+```go
+trainData, err := base.ParseCSVToInstances("linear regression.csv", true)
+if err != nil {
+	panic(err)
+}
+```
+
+create and trian our model:
+```go
+lr := linear_models.NewLinearRegression()
+lr.Fit(trainData)
+fmt.Println(testData)
+```
+Here we test the linear regression model we trained using the feature **[0,170]** and **[1,170]**.
+```go
+testData, err := base.ParseCSVToInstances("linear regression test.csv", true)
+if err != nil {
+	panic(err)
+}
+predictions, err := lr.Predict(testData)
+fmt.Println(predictions)
+```
+The result is:
+<img src="imgs/lr.jpg" height="200" >
+So, the prediction for Male of 170cm is 79.42kg, and the prediction for Female of 170cm is 70.40kg.
