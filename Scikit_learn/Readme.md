@@ -287,7 +287,7 @@ plt.scatter(data[data['Label']==1]['X'],data[data['Label']==1]['Y'],color='green
 ```
 Data visualization
 
-<img src='imgs\knn.jpg' height='300'>
+<img src='imgs/knn.jpg' height='300'>
 
 Split dataset using 2 fold
 ```python
