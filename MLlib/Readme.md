@@ -314,7 +314,7 @@ println("Within Set Sum of Squared Errors = " + WSSSE)
 Model error equals to 78.86.
 ###Naive Bayes
 The Naive Bayes part has not been finished yet. So far, we have obtained the top features.
-Get Documents from direcory, get message from documents, as well as get and filter useful words from message
+Get Documents from directory, get message from documents, as well as get and filter useful words from message
 
 ```scala
  def getDocuments(emailPath: String): RDD[String] =
