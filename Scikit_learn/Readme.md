@@ -266,7 +266,7 @@ Run the code several times and change amount of features to take, we get the fol
 | 200                               | 98.06%                  | 1.94% |
 | 400                               | 98.49%                  | 1.51% |
 ###Spam Result
-| Amount of Features to take        | Ham (Correct)           | Spam  |
+| Amount of Features to take        | Spam (Correct)          | Ham   |
 | ----------------------------------|:-----------------------:| -----:|
 | 50                                | 75.32%                  | 24.68%|
 | 100                               | 84.24%                  | 15.76%|
