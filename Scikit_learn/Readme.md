@@ -275,6 +275,45 @@ Run the code several times and change amount of features to take, we get the fol
 
 
 ## K Nearest Neighbor
+Importing and reading csv data
+```python
+dataLocation=r'/Users/yuliang/Documents/MachineLearning-master/Example_Data/KNN_Example_1.csv'
+data=pd.read_csv(dataLocation)
+```
+Scatter plot of original dataset
+```python 
+plt.scatter(data[data['Label']==0]['X'],data[data['Label']==0]['Y'],color='magenta',label='Alpha')
+plt.scatter(data[data['Label']==1]['X'],data[data['Label']==1]['Y'],color='green',label='Beta')
+```
+Data visualization
 
+<img src='imgs\knn.jpg' height='300'>
 
-
+Split dataset using 2 fold
+```python
+train,test=train_test_split(data,test_size=0.5)
+neigh = KNeighborsClassifier(n_neighbors=3,weights='distance')
+```
+Get features and labels from dataset
+```python
+features_train=train[['X','Y']].values
+label_train=train['Label'].values
+features_test=test[['X','Y']].values
+label_test=test['Label'].values
+```
+Train model
+```python
+neigh.fit(features_train,label_train)
+```
+Use test dataset to calculate mean accuracy of trained model
+```python
+mean_accuracy=neigh.score(features_test,label_test)
+```
+Predict unkown points
+```python
+unknownPoint=np.array([[5.3,4.3]])
+prediction=neigh.predict(unknownPoint)
+```
+result: 
+the mean accuracy on the given test data and labels is 0.860000
+Internet Service Provider Alpha
