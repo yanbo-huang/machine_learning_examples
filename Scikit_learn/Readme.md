@@ -6,8 +6,8 @@ This Readme file illustrates how to implement several machine learning algorithm
   * [Gaussian Kernel](#gaussian-kernel)
   * [Polynomial Kernel](#polynomial-kernel)
 * [Principal Component Analysis](#principal-component-analysis)
-* [Naive Bayes](#Naive-Bayes)
-* [K Nearest Neighbor](#K-Nearest-Neighbor)
+* [Naive Bayes](#naive-bayes)
+* [K Nearest Neighbor](#k-nearest-neighbor)
 
 
 ## Linear Regression
