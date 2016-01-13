@@ -209,7 +209,7 @@ println("Precision = " + precision)
 
 The precision rate equals to 92.98%. This is just an implementation of Logistic Regression with Spark, if we use cross validation set and do some feature engineering work, the precision rate is likely to be larger.
 
-###Linear SVM
+####Linear Regression
 
 As we said before, Spark MLlib do not provide kernel SVM yet, so we continually use sexual-height-weight(OLS_Regression_Example_3.csv) dataset, try to use Linear SVM(Large-Margin Classifier) to seperate sexual according to different weight and height.
 
@@ -312,6 +312,42 @@ println("Within Set Sum of Squared Errors = " + WSSSE)
 ```
 
 Model error equals to 78.86.
+###Naive Bayes
+The Naive Bayes part has not been finished yet. So far, we have obtained the top features.
+Get Documents from direcory, get message from documents, as well as get and filter useful words from message
+
+```scala
+ def getDocuments(emailPath: String): RDD[String] =
+    {
+     val emailDocuments =  sc.wholeTextFiles(emailPath).filter(x => !x._1.toString.contains("cmd") && !x._1.toString.contains(".DS_Store"))
+                                                       .map(x => x._2.mkString
+                                                                     .substring(x._2.indexOf("\n\n"))
+                                                                     .replace("\n", " ")
+                                                                     .replace("\t", " ")
+                                                                     .replace("3D", "")
+                                                                     .replaceAll("[^a-zA-Z\\s]", "")
+                                                                     .toLowerCase
+
+                                                       )
+     return emailDocuments
+    }
+```
+Get stop words 
+```scala
+def getStopWords(stopWordsPath:String): List[String] =
+    {
+      val stopWordsSource = Source.fromFile(stopWordsPath, "latin1")
+      val stopWordsLines = stopWordsSource.mkString.split("\n")
+      return stopWordsLines.toList
+    }
+```
+Get ham/spam top features
+```scala
+val hamDictionary = hamDocumentsTrain.flatMap(x => x.split(" ")).filter(s => s.nonEmpty &&!stopWords.contains(s))
+val hamFeatures = hamDictionary.groupBy(w => w).mapValues(_.size).sortBy(_._2, ascending = false)
+val hamTopFeatures = hamFeatures.map(x => x._1).take(featureAmount)
+```
+
 
 
 
