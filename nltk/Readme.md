@@ -69,11 +69,14 @@ def wordsIndicator(file_msg, allFeature, **kwargs):
             features_dict[w] = True
     return features_dict
 ```
-# Train the naive bayes classifier and print classify accuracy
+Train the naive bayes classifier and print classify accuracy
+```python
 naive_bayes_classifier = NaiveBayesClassifier.train(trainFeature)
 print ('Test Spam accuracy: %.4f' %nltk.classify.accuracy(naive_bayes_classifier, spamTestFeature))
 print ('Test Ham accuracy: %.4f' %nltk.classify.accuracy(naive_bayes_classifier, hamTestFeature))
+```
 Run the code several times and change amount of features to take, we get the following results:
+
 ###Ham Result
 | Amount of Features to take        | Ham (Correct)           | Spam  |
 | ----------------------------------|:-----------------------:| -----:|
