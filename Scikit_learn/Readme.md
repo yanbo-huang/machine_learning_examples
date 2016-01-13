@@ -6,6 +6,8 @@ This Readme file illustrates how to implement several machine learning algorithm
   * [Gaussian Kernel](#gaussian-kernel)
   * [Polynomial Kernel](#polynomial-kernel)
 * [Principal Component Analysis](#principal-component-analysis)
+* [Naive Bayes](#Naive Bayes)
+* [K Nearest Neighbor](#K Nearest Neighbor)
 
 
 ## Linear Regression
@@ -203,7 +205,58 @@ Plot both pac outputdata and DJI for comparision
 
 <img src='imgs\pca2.jpg' height='300'>
 
-##Naive Bayes
+## Naive Bayes
+Get files from directory
+```python
+def getFilesFromDir (path):
+    dir_content = os.listdir(path)
+    dir_clean = filter(lambda x: (".DS_Store" not in x) and ("cmds" not in x), dir_content)
+    return dir_clean
+```
+Get message from file
+```python
+def getMessage (file_list, path, amount_of_samples):
+    #...
+    #Regular expresssion process and keep words and spaces in the string
+    str2 = re.sub(r'([^\s\w]|_)+', '', str1)
+    #...
+```
+Get stopwords
+```python
+def getStopWords (path):
+    #...
+```
+Establish TDM using sklearn.feature_extraction.text.CountVectorizer
+Get ham/spam features
+```python
+vector = CountVectorizer(stop_words = stop_words_given,
+                         analyzer='word',
+                         decode_error = 'ignore',
+                         max_features = amountOfFeaturesToTake)
+words_counts = vector.fit_transform(str_clean_ham)
+words_counts = words_counts.toarray()
+feature_ham = vector.get_feature_names()
+```
+Establish TDM
+```python 
+vector3 = CountVectorizer(decode_error = 'ignore',
+                          vocabulary = feature_email)
+words_counts3 = vector3.fit_transform(email_words_list)
+```
+train: Multinomial Naive Bayes with y is the corresponding label of the train set, in which ham label is 0, spam label is 1.
+```python 
+clf = MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True).fit(words_counts3, y)
+```
+ham/spam test
+```python
+new_counts = vector3.transform(str_clean_ham2)
+```
+ham/spam prediction and accuracy score
+```python
+predicted = clf.predict(new_counts)
+accu_score = clf.score(new_counts, y1)
+```
+
 Run the code several times and change amount of features to take, we get the following results:
 ###Ham Result
 | Amount of Features to take        | Ham (Correct)           | Spam  |
@@ -221,7 +274,7 @@ Run the code several times and change amount of features to take, we get the fol
 | 400                               | 90.29%                  | 9.71% |
 
 
-
+## K Nearest Neighbor
 
 
 
