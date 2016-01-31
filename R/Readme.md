@@ -2,10 +2,10 @@
 
 ##Index
 
-* [Overview of ML with R](##R-Machine-Learning)
-* [ML Tricks With R](##ML-Tricks-With-R)
-* [Implement ML with R](##R-Machine-Learning)
-* [Combine with High Order Functions](##R-Functional)
+* [Overview of ML with R](#R-Machine-Learning)
+* [ML Tricks With R](#ML-Tricks-With-R)
+* [Implement ML with R](#R-Machine-Learning)
+* [Combine with High Order Functions](#R-Functional)
 
 <h2 id='R-Machine-Learning-Overview'>R Machine Learning Overview</h2>
 
