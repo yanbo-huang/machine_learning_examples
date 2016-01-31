@@ -47,7 +47,7 @@ Visualization Package:
 
 <h2 id='ML-Tricks-With-R'>ML Tricks With R</h2>
 
-<h2 id='Implement-Machine-Learning'>Implement Machine Learning</h2>
+<h2 id='R-Machine-Learning'>Implement Machine Learning</h2>
 
 ###Nearst Neighbour
 
