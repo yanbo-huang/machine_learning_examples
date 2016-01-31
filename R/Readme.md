@@ -1,4 +1,147 @@
-###Machine Learning with R
+#Machine Learning with R
+
+##Index
+
+* [Overview Of ML with R](##R-Machine-Learning)
+* [ML Tricks With R](##ML-Tricks-With-R)
+* [Implement ML with R](##R-Machine-Learning)
+* [Combine with High Order Functions](##R-Functional)
+
+
+##R-Machine-Learning-Overview
+
+As a free, open-source, statistical language, R is today one of the most attracting tool for both developers and data scientists to use. Most machine-learning algorithms are not included as part of the base installation, but thanks for thounds of contributors from varies communities, a bunch of packages was added as a supplement in R. Packages was free to download from [CRAN](https://cran.r-project.org/) with only one line of code:
+
+```r
+install.packages("package_name")
+```
+
+If we need to use one additional package, only need import with one line of code:
+
+```r
+library(package_name)
+```
+
+Different R data wrangling, machine learning and plotting packages made it extremely handy and powerful for everyone. In this project, we mainly covered these packages:
+
+Data wrangling packages:
+
++ Basic R commands
++ dplyr
++ plyr
++ reshape
++ reshape2
++ xlsx
+
+Machine Learning Packages:
+
++ caret
++ e1071
++ kernlab
++ class
+
+Visualization Package:
+
++ ggplot2
+
+
+##ML-Tricks-With-R
+
+##Implement-Machine-Learning
+
+###Nearst Neighbour
+
+Nearest neighbor classifiers are defined by their characteristic of classifying unlabeled examples by assigning them the class of the most similar labeled examples, and well-suited for classification tasks. Two things we need to specificy
+
+1. the number of k, one common practice is to set k equal to the square root of the number of training
+examples
+2. the distance metric to use, eculidean distance, manhattan distance etc.
+
+First step, load data from CSV
+
+```r
+knn.data <- read.csv("Downloads/MachineLearning-master/Example Data/KNN_Example_1.csv")
+```
+
+Visualize what the data looks like:
+
+```r
+library(ggplot2)
+ggplot(knn.data) + geom_point(aes(X, Y, color = Label))
+```
+
+![knn1](imgs/knn1.png)
+
+In the plot, blue and red points mixed in the area *3<x<5* and *5<y<7.5*. From Mike's blog:
+
+>Since the groups are mixed the K-NN algorithm is a good choice, as fitting a linear decision boundary would cause a lot of false classifications in the mixed area.
+
+Firstly, split data into train and test data with:
+
+```r
+sub <- sample(2, nrow(knn.data), replace=TRUE, prob=c(0.5, 0.5))
+data.train <- knn.data[sub == 1, 1:2]
+data.test <- knn.data[sub == 2, 1:2]
+data.train.label <- knn.data[sub == 1, 3]
+data.test.label <- knn.data[sub == 2, 3]
+```
+
+Train a knn model
+
+```r
+library(class)
+knn.pred <- knn(train = data.train, test = data.test, cl = data.train.label, k = 3)
+```
+
+Compare the predict data and real label of test data:
+
+```r
+knn.pred.dataframe <- as.data.frame(knn.pred)
+knn.test.label <- as.data.frame(data.test.label)
+knn.accuracy <- cbind(knn.pred.dataframe, knn.test.label)
+```
+
+Predict a unknown point(5.3,4.3)
+
+```r
+d1 <- 5.3
+d2 <- 4.3
+unknown <- cbind(d1, d2)
+colnames(unknown) <- c("X", "Y")
+knn.pred <- knn(train = data.train, test = unknown, cl = data.train.label, k = 3)
+```
+
+Result is 0.
+
+We can also apply *feature scaling* on this data, by applying a function named *normalize*:
+
+```r
+normalize <- function(x){
+	return ((x - min(x)) / (max(x) - min(x)))
+}
+```
+
+Here we need to apply this normalize function to our data by using function *lapply*, this function is a high-order function which taks an dataframe as the first parameter, and a function as the second parameter.
+
+```r
+knn.data.scaled <- as.data.frame(lapply(knn.data[1:2], normalize))
+```
+
+The rest steps is just the same as before.
+
+Evaluate the classifier:
+
+```r
+library(gmodels)
+CrossTable(x = knn.accuracy$data.test.label, y = knn.accuracy$knn.pred, prop.chisq = F)
+```
+
+The result is a *confusion matrix* like this:
+
+![knn-confusion-matrix](imgs/knn2.png)
+
+As figure show above, 2 out of 51 points are misclassified, 96.08% seems to be an resonable result for an un-improved knn classifier.
+
 
 ####Linear Regression
 
@@ -279,63 +422,20 @@ We are able to know that best performance(minimum error) is 0.
 
 ![svm-poly3](imgs/svm-poly3.png)
 
+##R-Functional
 
-####K Nearst Neighbour
+Here is a few examples on how we combine R with high-order funcitons:
 
-First step, load data from CSV
-
-```r
-knn.data <- read.csv("Downloads/MachineLearning-master/Example Data/KNN_Example_1.csv")
-```
-
-Visualize what the data looks like:
+In KNN, we implemented *feature scaling* with this line of code:
 
 ```r
-library(ggplot2)
-ggplot(knn.data) + geom_point(aes(X, Y, color = Label))
+normalize <- function(x){
+	return ((x - min(x)) / (max(x) - min(x)))
+}
+knn.data.scaled <- as.data.frame(lapply(knn.data[1:2], normalize))
 ```
 
-![knn1](imgs/knn1.png)
-
-In the plot, blue and red points mixed in the area *3<x<5* and *5<y<7.5*. From Mike's blog:
-
->Since the groups are mixed the K-NN algorithm is a good choice, as fitting a linear decision boundary would cause a lot of false classifications in the mixed area.
-
-Firstly, split data into train and test data with:
-
-```r
-sub <- sample(2, nrow(knn.data), replace=TRUE, prob=c(0.5, 0.5))
-data.train <- knn.data[sub == 1, 1:2]
-data.test <- knn.data[sub == 2, 1:2]
-data.train.label <- knn.data[sub == 1, 3]
-data.test.label <- knn.data[sub == 2, 3]
-```
-
-Train a knn model
-
-```r
-knn.pred <- knn(train = data.train, test = data.test, cl = data.train.label, k = 3)
-```
-
-Compare the predict data and real label of test data:
-
-```r
-knn.pred.dataframe <- as.data.frame(knn.pred)
-knn.test.label <- as.data.frame(data.test.label)
-knn.accuracy <- cbind(knn.pred.dataframe, knn.test.label)
-```
-
-Predict a unknown point(5.3,4.3)
-
-```r
-d1 <- 5.3
-d2 <- 4.3
-unknown <- cbind(d1, d2)
-colnames(unknown) <- c("X", "Y")
-knn.pred <- knn(train = data.train, test = unknown, cl = data.train.label, k = 3)
-```
-
-Result is 0.
+Here, lapply function taks an function named *normalize* as an argument, returns an matrix, then we transforma it into a dataframe.
 
 
 

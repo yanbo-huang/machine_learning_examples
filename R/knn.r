@@ -1,5 +1,6 @@
 library(ggplot2)
 library(class)
+library(gmodels)
 #load data
 knn.data <- read.csv("Downloads/MachineLearning-master/Example Data/KNN_Example_1.csv")
 #take a look at data
@@ -22,3 +23,5 @@ d2 <- 4.3
 unknown <- cbind(d1, d2)
 colnames(unknown) <- c("X", "Y")
 knn.pred <- knn(train = data.train, test = unknown, cl = data.train.label, k = 3)
+#evaluate classifier
+CrossTable(x = knn.accuracy$data.test.label, y = knn.accuracy$knn.pred, prop.chisq = F)
