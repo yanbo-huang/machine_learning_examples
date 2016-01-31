@@ -10,6 +10,42 @@
 
 ##R-Machine-Learning-Overview
 
+As a free, open-source, statistical language, R is today one of the most attracting tool for both developers and data scientists to use. Most machine-learning algorithms are not included as part of the base installation, but thanks for thounds of contributors from varies communities, a bunch of packages was added as a supplement in R. Packages was free to download from [CRAN](https://cran.r-project.org/) with only one line of code:
+
+```r
+install.packages("package_name")
+```
+
+If we need to use one additional package, only need import with one line of code:
+
+```r
+library(package_name)
+```
+
+Different R data wrangling, machine learning and plotting packages made it extremely handy and powerful for everyone.
+
+In this project, we mainly covered these packages:
+
+Data wrangling packages:
+
++ Base R commands
++ dplyr
++ plyr
++ reshape
++ reshape2
++ xlsx
+
+Machine Learning Packages:
+
++ caret
++ e1071
++ kernlab
+
+Visualization Package:
+
++ ggplot2
+
+
 ##ML-Tricks-With-R
 
 ##Implement-Machine-Learning
