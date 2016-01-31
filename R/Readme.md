@@ -10,9 +10,9 @@
 
 ##R-Machine-Learning-Overview
 
-##Implement-Machine-Learning
-
 ##ML-Tricks-With-R
+
+##Implement-Machine-Learning
 
 ####Linear Regression
 
