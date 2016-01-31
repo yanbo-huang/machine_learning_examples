@@ -3,8 +3,8 @@
 ##Index
 
 * [Overview Of ML with R](##R-Machine-Learning)
-* [Implement ML with R](##R-Machine-Learning)
 * [ML Tricks With R](##ML-Tricks-With-R)
+* [Implement ML with R](##R-Machine-Learning)
 * [Combine with High Order Functions](##R-Functional)
 
 
