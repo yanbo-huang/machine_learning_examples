@@ -1,4 +1,18 @@
-###Machine Learning with R
+#Machine Learning with R
+
+##Index
+
+* [Overview Of ML with R](#R-Machine-Learning)
+* [Implement ML with R](#R-Machine-Learning)
+* [ML Tricks With R](#ML-Tricks-With-R)
+* [Combine with High Order Functions](#R-Functional)
+
+
+##R-Machine-Learning-Overview
+
+##Implement-Machine-Learning
+
+##ML-Tricks-With-R
 
 ####Linear Regression
 
@@ -336,6 +350,8 @@ knn.pred <- knn(train = data.train, test = unknown, cl = data.train.label, k = 3
 ```
 
 Result is 0.
+
+##R-Functional
 
 
 
