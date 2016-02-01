@@ -2,13 +2,14 @@
 
 ##Index
 
-* [Overview Of ML with R](##R-Machine-Learning)
-* [ML Tricks With R](##ML-Tricks-With-R)
-* [Implement ML with R](##R-Machine-Learning)
-* [Combine with High Order Functions](##R-Functional)
+* [Overview of ML with R](#R-Machine-Learning)
+* [ML Tricks With R](#ML-Tricks-With-R)
+* [Implement ML with R](#R-Machine-Learning)
+* [Combine with High Order Functions](#R-Functional)
+
+<h2 id='R-Machine-Learning-Overview'>R Machine Learning Overview</h2>
 
 
-##R-Machine-Learning-Overview
 
 As a free, open-source, statistical language, R is today one of the most attracting tool for both developers and data scientists to use. Most machine-learning algorithms are not included as part of the base installation, but thanks for thounds of contributors from varies communities, a bunch of packages was added as a supplement in R. Packages was free to download from [CRAN](https://cran.r-project.org/) with only one line of code:
 
@@ -44,10 +45,9 @@ Visualization Package:
 
 + ggplot2
 
+<h2 id='ML-Tricks-With-R'>ML Tricks With R</h2>
 
-##ML-Tricks-With-R
-
-##Implement-Machine-Learning
+<h2 id='R-Machine-Learning'>Implement Machine Learning</h2>
 
 ###Nearst Neighbour
 
@@ -422,7 +422,7 @@ We are able to know that best performance(minimum error) is 0.
 
 ![svm-poly3](imgs/svm-poly3.png)
 
-##R-Functional
+<h2 id='R-Functional'>R Functional</h2>
 
 Here is a few examples on how we combine R with high-order funcitons:
 

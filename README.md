@@ -50,3 +50,9 @@ Probability Monad: Reimplement Mike's blog samples using several different ML li
 3. Started algorithms with Graphlab Create.
 4. Started to implement a recommend system with Python.
 5. Decide to finish Scikit Learn, Graphlab Create, R packages and recommend system before 2015-12-25.
+
+##2016.01.31 Process
+
+1. Provide more general information on evaluate a ml algorithm. For example, how to use scikit-learn to deal with overfitting, feature selection, learning curve etc.
+2. Connect each language with functional programing/high-order functions.
+3. Start to write slide for final presentation.
