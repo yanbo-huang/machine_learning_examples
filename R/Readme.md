@@ -3,8 +3,8 @@
 ##Index
 
 * [Overview of ML with R](#R-Machine-Learning)
-* [ML Tricks With R](#ML-Tricks-With-R)
 * [Implement ML with R](#R-Machine-Learning)
+* [Model Evaluation](#ML-Tricks-With-R)
 * [Combine with High Order Functions](#R-Functional)
 
 <h2 id='R-Machine-Learning-Overview'>R Machine Learning Overview</h2>
@@ -47,8 +47,6 @@ Visualization Package:
 + ggplot2
 + wordcloud
 + psych
-
-<h2 id='ML-Tricks-With-R'>ML Tricks With R</h2>
 
 <h2 id='R-Machine-Learning'>Implement Machine Learning</h2>
 
@@ -500,6 +498,101 @@ summary(tuned)
 We are able to know that best performance(minimum error) is 0.
 
 ![svm-poly3](imgs/svm-poly3.png)
+
+<h2 id='ML-Tricks-With-R'>Model Evaluation</h2>
+
+In this section, we are going to introduce how to evaluate an algorithm using R.
+
+###Confusion Matrix
+
+A **Confusion Matrix** is a table that categorize predictions and it's real class. In previous, we've used this metric to evaluate our classifier using this line of code:
+
+```r
+library(gmodels)
+CrossTable(predict_type, original_type, prop.chisq = False)
+```
+
+A **Confusion Matrix** contains 4 parts in general:
+
++ True Positive, correctly classified with class to be expected.
++ True Negative, correctly classified with class not expected.
++ False Positive, misclassified with the class of expected.
++ False Negative, misclassified with the class not expected.
+
+And with this matrix, we are able to calculate the final accuracy rate.
+
+Besides of function **CrossTable**, in R we can also use:
+
+```r
+table(original_type, predicted_type)
+```
+
+to build a **confusion matrix** manually.
+
+###Precision and Recall
+
+This measure is able to provide an indication of how interesting and relevant a model's result are.
+
+**Precision** is the percentage of positive values that are truely positive, that is, precision equals the number of true positive divide the sum of true positive and false positive.
+
+On the ohter hand, **Recall** indicates how complete the result are, that is the number of true positive over the sum of true positive and false negative.
+
+We can calculate this measure by two ways, manually or use package *caret*. According to the confusion matrix we listed before, it is not hard for us to get the number of TP, TF, NP and NF, what we need to do is just to plug-in these values into the Precision/Recall fomular. Another way is like this:
+
+```r
+library(caret)
+posPredValue(predit_type, original_type, positive = "label_of_positive_type")
+```
+
+###F-Score
+
+As it seems to be a bit messy if we use both **Precision** and **Recall**, **F-Score** is a combination of these two metrics into a single number.
+
+```r
+F-Score = (2 * precision * recall)/(precision + recall)
+```
+
+F-measure reduces model performance to a single number, it provides a convenient way to compare several models side-by-side.
+
+###Cross Validation
+
+Our data is not fixed and comes from a random distribution, our model learn from our data, and give us the learned result by the sample data. If we train model based on all data and evaluate model based on the same set, we may end up with over optimistic prediction. So there must exists a set for us to evaluate the model and this set need to be statistically independent.
+
+Varies packages in R allow us using a number of functions for this purpose.
+
+####Hold Out
+
+Except train set and test set, a third dataset need to be seperated named *cross validation set*. It is suggested that:
+
+> The validation dataset would be used for iterating and refining the model or models
+chosen, leaving the test dataset to be used only once as a final step to report an estimated error rate for future predictions. 
+
+There also exists some limitations when we use *hold out*. For example, suppose we have not so much training examples, the propotation of hold out may lead to an un-reliable model.
+
+In R, we mostly generate a random id for observations then construct three part of dataset by filter different id.
+
+####K-Fold-Crossvalidation
+
+K-fold cross validation is a commonly used technique for validate model performance. We first divide data into k folds, and each of the k folds takes turns being the hold-out validation set; a model is trained on the rest of the k 1 folds and measured on the held-out fold. 10-fold cross validation is often used.
+
+This function is already built in *caret package*:
+
+```r
+folds <- createFolds(data, k = 10, list = False)
+str(folds)
+```
+
+####Leave-One-Out
+
+Leave-One-Out is another cross validation technique which always test one single object. LOOCV is essentially the same as K-fold cross validation. This method maxmized train data and cv data, but in some situation, it may be computational expensive.
+
+LOOCV and be done using package *DMwR*, but I didn't implement it myself.
+
+###Learning Curve
+
+###ROC Curve
+
+
 
 <h2 id='R-Functional'>R Functional</h2>
 
