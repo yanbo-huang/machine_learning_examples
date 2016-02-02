@@ -46,6 +46,7 @@ Visualization Package:
 
 + ggplot2
 + wordcloud
++ psych
 
 <h2 id='ML-Tricks-With-R'>ML Tricks With R</h2>
 
@@ -210,6 +211,10 @@ From the confusion matrix we are able to know that 13% of the email is labeled a
 
 ####Linear Regression
 
+Regression analysis is used for modeling relationships among data element and try to estimate the impact of one feature related to the outcome.
+
+In this section, we mainly focus on the most simple regression work named **linear regression**, try to fit a line to evaluate the realtionship between sexual, weight and height.
+
 Read data:
 
 ```r
@@ -248,6 +253,15 @@ maleFemale.plot + geom_point(aes(x = Height, y = Weight, color = Gender)) + labs
 ```
 
 ![Weight and heights for male and females](imgs/2.png)
+
+Also, we can check the relationships between 3 variables,  It provides a visualization of how strongly correlated the variables are. 
+
+```r
+library(pshch)
+pairs.panels(data[c("Gender", "Height", "Weight")])
+```
+
+![pshchplot](imgs/psych.png)
 
 train a linear model(ignore male and female difference)
 
