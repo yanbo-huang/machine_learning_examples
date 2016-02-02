@@ -40,10 +40,12 @@ Machine Learning Packages:
 + e1071
 + kernlab
 + class
++ tm
 
 Visualization Package:
 
 + ggplot2
++ wordcloud
 
 <h2 id='ML-Tricks-With-R'>ML Tricks With R</h2>
 
@@ -142,6 +144,69 @@ The result is a *confusion matrix* like this:
 
 As figure show above, 2 out of 51 points are misclassified, 96.08% seems to be an resonable result for an un-improved knn classifier.
 
+###Naive Bayes
+
+**Naive Bayes** is an algorithm that use principles of probability for classification. For example, use frequency of words in junk email messages to identify new junk email. We mostly use **naive bayes** to estimate the likelihood of an event should be based on the evidence.
+
+Naive Bayes is simple to use, fast, effective, does well with missing values and require not so much training example. However, it makes an *naive* assumption about the distribution as this algorithm treats each feature equally important and independent. This is not likely to be always true in the real-world applications.
+
+In this section, as we need to build a model based on *text analysis*, we need these packages:
+
+```r
+library(tm)
+library(wordcloud)
+library(e1071)
+library(gmodels)
+```
+
+**tm** is for text clean and generate DTM, **wordcloud** can help us make wordcloud plot. **e1071** has built in naivebayes classifier and gmodels allow us to evaluate the model performance.
+
+The main steps of using R for build a naive bayes classifier is listed:
+
+After load data into R, we need to remove stop words, white spaces, numbers and punctuation with these lines of code:
+
+```r
+nb.corpus <- tm_map(nb.corpus, removeNumbers)
+nb.corpus <- tm_map(nb.corpus, removeWords, stopwords())
+nb.corpus <- tm_map(nb.corpus, removePunctuation)
+nb.corpus <- tm_map(nb.corpus, stripWhitespace)
+```
+
+For build a **DocumentTermMatrix**, we just need to call *DocumentTermMatrix* function in **tm** package:
+
+```r
+nb.dtm <- DocumentTermMatrix(nb.corpus)
+```
+
+To visualize wordcloud, we need use **wordcloud** library:
+
+```r
+wordcloud(spam$text, max.words = 40, scale = c(3, 0.5))
+wordcloud(ham$text, max.words = 40, scale = c(3, 0.5))
+```
+
+The result is like this, first chart is wordcloud of spam messages, second chart is wordcloud of ham messages:
+
+![imgs/spam.png](imgs/spam.png)
+
+![imgs/ham](imgs/ham.png)
+
+Train a classifier and make prediction:
+
+```r
+nb.classifier <- naiveBayes(nb.train, nb.raw.train$type)
+nb.pred <- predict(nb.classifier, nb.test)
+```
+
+Evaluate the classifier performance:
+
+```r
+CrossTable(nb.pred, nb.raw.test$type, prop.chisq = FALSE)
+```
+
+![imgs/naivebayes](imgs/naivebayes.png)
+
+From the confusion matrix we are able to know that 13% of the email is labeled as spam, in which 34 observations were misclassified, and the precision rate is 97.82%.
 
 ####Linear Regression
 
@@ -436,6 +501,20 @@ knn.data.scaled <- as.data.frame(lapply(knn.data[1:2], normalize))
 ```
 
 Here, lapply function taks an function named *normalize* as an argument, returns an matrix, then we transforma it into a dataframe.
+
+In Naive Bayes, in order to build a classifier, we need to transform all factor values from 0, 1 to No, Yes, we accomplish by applying a function into another function like this:
+
+```r
+convert_counts <- function(x) {
+    x <- ifelse(x > 0, 1, 0)
+    x <- factor(x, levels = c(0, 1), labels = c("No", "Yes"))
+    return(x)
+}
+nb.train <- apply(train.data, MARGIN = 2, convert_counts)
+nb.test <- apply(test.data, MARGIN = 2, convert_counts)
+```
+
+Here, firstly, we built a function named **convert_counts**, then, by using **apply** function in R, we apply **convert_counts** function to both train.data and test.data.
 
 
 
