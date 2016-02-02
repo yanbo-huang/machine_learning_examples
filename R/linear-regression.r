@@ -1,4 +1,5 @@
 library(ggplot2)
+library(psych)
 #load data
 data <- read.csv("Downloads/MachineLearning-master/Example Data/OLS_Regression_Example_3.csv", stringsAsFactors=F))
 #replace gender with 0 and 1, male and female respectively
@@ -13,6 +14,8 @@ human.plot + geom_point(aes(x = Height, y = Weight)) + labs(title = "Weight and 
 #plot data (female and male separate)
 maleFemale.plot <- ggplot(data)
 maleFemale.plot + geom_point(aes(x = Height, y = Weight, color = Gender)) + labs(title = "Weight and heights for male and females")
+#visualize the correlation
+pairs.panels(data[c("Gender", "Height", "Weight")])
 #train a linear model
 lm_model <- lm(Weight~Gender+Height, data=data)
 summary(lm_model)
