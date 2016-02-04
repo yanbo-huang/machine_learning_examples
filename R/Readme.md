@@ -41,6 +41,7 @@ Machine Learning Packages:
 + kernlab
 + class
 + tm
++ stats
 
 Visualization Package:
 
@@ -294,7 +295,7 @@ predict(lm_model, test.data)
 
 Result is 70.3558.
 
-####Principle Component Analysis
+###Principle Component Analysis
 
 Load data:
 
@@ -367,7 +368,7 @@ Normalized:
 
 ![pca3](imgs/pca3.png)
 
-####Support Vector Machine
+###Support Vector Machine
 
 Firstly, read data from csv:
 
@@ -463,7 +464,7 @@ Reference:
 3. [SVM example with Iris Data in R](http://rischanlab.github.io/SVM.html)
 4. [Multiple graphs on one page (ggplot2)](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/)
 
-####Support Vector Machine -- Polynomial Kernel
+###Support Vector Machine -- Polynomial Kernel
 
 Fisrt, take a look of our train & test data:
 
@@ -498,6 +499,56 @@ summary(tuned)
 We are able to know that best performance(minimum error) is 0.
 
 ![svm-poly3](imgs/svm-poly3.png)
+
+###K-means in R
+
+**Clustering** is an unsupervised machine learning task that automatically divides the data into clusters, the idea of grouping is the same: group the data such that related elements are placed together.
+
+One problem of k-means is that it may stuck at local minimum instead converge at the global minimum, so run k-means clustering several times may be a good choice. How to decide the number of groups?
+
+1. Prior knowledge of the data.
+2. Elbow method, to choose the elbow point in the graph.
+
+We use *SNS Dataset* for this clustering task:
+
+```r
+data <- read.csv("Desktop/Q1 Course/FP/MachineLearningSamples/extra-data/snsdata.csv", header = T)
+```
+
+If we take a look at our data, we can find that there are many missing values exist:
+
+```r
+sapply(data, function(x) sum(is.na(x)))
+```
+
+By applying *sun(is.na)*, we calculated number of missing value in each column. There are 2724 missing values in *gender* column and 5086 in *age* column.
+
+Firstly, we use dummy coding to treat gender values by create 2 new columns named *female* and *no_gender*:
+
+```r
+data$female <- ifelse(data$gender == "F" & !is.na(data$gender), 1, 0)
+data$no_gender <- ifelse(is.na(data$gender), 1, 0)
+```
+
+Then impute missing values of age column:
+
+```r
+ave_age <- ave(data$age, data$gradyear, FUN = function(x) mean(x, na.rm = TRUE))
+data$age <- ifelse(is.na(data$age), ave_age, teens$age)
+```
+
+If the age if NA, we'll impute current age with mean value age of graduation year.
+
+Train a model:
+
+```r
+library(stats)
+data <- data[, -2]
+sns_model <- kmeans(data, 5)
+```
+
+Now we've built a k-means model with R.
+
 
 <h2 id='ML-Tricks-With-R'>Model Evaluation</h2>
 
@@ -588,17 +639,19 @@ Leave-One-Out is another cross validation technique which always test one single
 
 LOOCV and be done using package *DMwR*, but I didn't implement it myself.
 
-###Learning Curve
-
 ###ROC Curve
 
 
 
 <h2 id='R-Functional'>R Functional</h2>
 
+As Hadley Wickham said that
+
+> R, at its heart, is a functional programming (FP) language.
+
 Here is a few examples on how we combine R with high-order funcitons:
 
-In KNN, we implemented *feature scaling* with this line of code:
+In **Knn**, we implemented *feature scaling* with this line of code:
 
 ```r
 normalize <- function(x){
@@ -609,7 +662,7 @@ knn.data.scaled <- as.data.frame(lapply(knn.data[1:2], normalize))
 
 Here, lapply function taks an function named *normalize* as an argument, returns an matrix, then we transforma it into a dataframe.
 
-In Naive Bayes, in order to build a classifier, we need to transform all factor values from 0, 1 to No, Yes, we accomplish by applying a function into another function like this:
+In **Naive Bayes**, in order to build a classifier, we need to transform all factor values from 0, 1 to No, Yes, we accomplish by applying a function into another function like this:
 
 ```r
 convert_counts <- function(x) {
@@ -622,6 +675,21 @@ nb.test <- apply(test.data, MARGIN = 2, convert_counts)
 ```
 
 Here, firstly, we built a function named **convert_counts**, then, by using **apply** function in R, we apply **convert_counts** function to both train.data and test.data.
+
+In **K-means**, as we need to handle with missing values, firstly, we used function *sapply* to check which column has missing vaues:
+
+```r
+sapply(data, function(x) sum(is.na(x)))
+```
+
+We used these lins of code for imipute missing values:
+
+```r
+ave_age <- ave(data$age, data$gradyear, FUN = function(x) mean(x, na.rm = TRUE))
+data$age <- ifelse(is.na(data$age), ave_age, teens$age)
+```
+
+Firstly, we use an **anonymous function** to get the mean value of each class of gradyear, then each time a missing value is found, we call the ave function to impute the missing value.
 
 
 
