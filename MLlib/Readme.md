@@ -1,33 +1,36 @@
-###Machine Learning with Apache Spark
+#Machine Learning with Apache Spark
 
-####Intellij idea configuration for spark:
+##Index
 
-*defult: spark is already in your computer*
+* [Overview of ML with Spark](#Spark-Machine-Learning-Overview)
+* [Implement ML with Spark](#Spark-Machine-Learning)
+* [Model Evaluation](#ML-Tricks-With-Spark)
+* [Combine with High Order Functions](#Scala-Functional)
 
-- Install scala plugin 
-- At the root directory of spark, run "sbt/sbt gen-idea"
-- Create a scala project and write code in the scala script
-- Add spark assembly
-  + Select *File*
-  + Select *Project Structure*
-  + Select *Libraries*
-  + click *+*, add three file types, include *javadocs, classes and jar*, click ok.
-+  In the scala script: 
+<h2 id='Spark-Machine-Learning-Overview'>Spark Machine Learning Overview</h2>
 
-```scala
-    val conf = new SparkConf().setAppName("test").setMaster("local")
-    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    val sc = new SparkContext(conf)
-    var t0 = System.currentTimeMillis
-    // Main code here //
-    // Main code end //
-    val et = (System.currentTimeMillis - t0) / 1000
-    val mins = et / 60
-    val secs = et % 60
-    println( "{Time taken = %d mins %d secs}".format(mins, secs) )
-```
+MLlib is Spark’s machine learning (ML) library. Its goal is to make practical machine learning scalable and easy. It consists of common learning algorithms and utilities, including classification, regression, clustering, collaborative filtering, dimensionality reduction, as well as lower-level optimization primitives and higher-level pipeline APIs [1].
 
-####Linear Regression
+Recently, spark 1.6 was released, **dataframe** has become the most important data structure instead of **RDD** in the past, and, a number of new machine learning algorithms also available in this new version of apache spark.
+
+Spark-1.6 with pre-built hadoop can be found in TU Delft HTTP, download [here](http://ftp.tudelft.nl/apache/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz).
+
+In this section, we will cover these algorithms: 
+
+- linear models
+  + linear regression
+  + logistic regression
+  + linear svm (max-margin classifier)
+- naive bayes
+- clustering
+  + k-means
+- dimensionality reduction
+  + singular value decomposition (SVD)
+  + principal component analysis (PCA)
+
+<h2 id='Spark-Machine-Learning'>Implement Machine Learning with Spark</h2>
+
+###Linear Regression
 
 Load data from csv file and remove the first row:
 
@@ -81,7 +84,7 @@ val ModelError = math.sqrt(MSE)
 println("Model Error = " + ModelError)
 ```
 
-####Principal Component Analysis
+###Principal Component Analysis
 
 Load data from csv and remove the first line:
 
@@ -131,7 +134,7 @@ println("Principal components are:\n" + pc)
 We are able to get 24 principal components.
 
 
-####Logistic Regression
+###Logistic Regression
 
 As apache MLlib is under construction, they do not provide kernel svm, knn. So we'll implement some existed algorithms with apache spark, first one is Logistic Regression use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
 
@@ -209,7 +212,7 @@ println("Precision = " + precision)
 
 The precision rate equals to 92.98%. This is just an implementation of Logistic Regression with Spark, if we use cross validation set and do some feature engineering work, the precision rate is likely to be larger.
 
-####Linear Regression
+###Linear SVM
 
 As we said before, Spark MLlib do not provide kernel SVM yet, so we continually use sexual-height-weight(OLS_Regression_Example_3.csv) dataset, try to use Linear SVM(Large-Margin Classifier) to seperate sexual according to different weight and height.
 
@@ -272,7 +275,7 @@ val precision = metrics.precision
 println("Precision = " + precision)
 ```
 
-###Kmeans
+###K-means
 
 We continue implement existed algorithms with apache spark, this one is **K-means** use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
 
@@ -312,7 +315,9 @@ println("Within Set Sum of Squared Errors = " + WSSSE)
 ```
 
 Model error equals to 78.86.
+
 ###Naive Bayes
+
 The Naive Bayes part has not been finished yet. So far, we have obtained the top features.
 Get Documents from directory, get message from documents, as well as get and filter useful words from message
 
@@ -347,6 +352,10 @@ val hamDictionary = hamDocumentsTrain.flatMap(x => x.split(" ")).filter(s => s.n
 val hamFeatures = hamDictionary.groupBy(w => w).mapValues(_.size).sortBy(_._2, ascending = false)
 val hamTopFeatures = hamFeatures.map(x => x._1).take(featureAmount)
 ```
+
+<h2 id='ML-Tricks-With-Spark'>Model Evaluation</h2>
+
+<h2 id='Scala-Functional'>Scala Functional</h2>
 
 
 
