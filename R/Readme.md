@@ -3,8 +3,8 @@
 ##Index
 
 * [Overview of ML with R](#R-Machine-Learning)
-* [ML Tricks With R](#ML-Tricks-With-R)
 * [Implement ML with R](#R-Machine-Learning)
+* [Model Evaluation](#ML-Tricks-With-R)
 * [Combine with High Order Functions](#R-Functional)
 
 <h2 id='R-Machine-Learning-Overview'>R Machine Learning Overview</h2>
@@ -41,14 +41,13 @@ Machine Learning Packages:
 + kernlab
 + class
 + tm
++ stats
 
 Visualization Package:
 
 + ggplot2
 + wordcloud
 + psych
-
-<h2 id='ML-Tricks-With-R'>ML Tricks With R</h2>
 
 <h2 id='R-Machine-Learning'>Implement Machine Learning</h2>
 
@@ -296,7 +295,7 @@ predict(lm_model, test.data)
 
 Result is 70.3558.
 
-####Principle Component Analysis
+###Principle Component Analysis
 
 Load data:
 
@@ -369,7 +368,7 @@ Normalized:
 
 ![pca3](imgs/pca3.png)
 
-####Support Vector Machine
+###Support Vector Machine
 
 Firstly, read data from csv:
 
@@ -465,7 +464,7 @@ Reference:
 3. [SVM example with Iris Data in R](http://rischanlab.github.io/SVM.html)
 4. [Multiple graphs on one page (ggplot2)](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/)
 
-####Support Vector Machine -- Polynomial Kernel
+###Support Vector Machine -- Polynomial Kernel
 
 Fisrt, take a look of our train & test data:
 
@@ -501,11 +500,178 @@ We are able to know that best performance(minimum error) is 0.
 
 ![svm-poly3](imgs/svm-poly3.png)
 
+###K-means in R
+
+**Clustering** is an unsupervised machine learning task that automatically divides the data into clusters, the idea of grouping is the same: group the data such that related elements are placed together.
+
+One problem of k-means is that it may stuck at local minimum instead converge at the global minimum, so run k-means clustering several times may be a good choice. How to decide the number of groups?
+
+1. Prior knowledge of the data.
+2. Elbow method, to choose the elbow point in the graph.
+
+We use *SNS Dataset* for this clustering task:
+
+```r
+data <- read.csv("Desktop/Q1 Course/FP/MachineLearningSamples/extra-data/snsdata.csv", header = T)
+```
+
+If we take a look at our data, we can find that there are many missing values exist:
+
+```r
+sapply(data, function(x) sum(is.na(x)))
+```
+
+By applying *sun(is.na)*, we calculated number of missing value in each column. There are 2724 missing values in *gender* column and 5086 in *age* column.
+
+Firstly, we use dummy coding to treat gender values by create 2 new columns named *female* and *no_gender*:
+
+```r
+data$female <- ifelse(data$gender == "F" & !is.na(data$gender), 1, 0)
+data$no_gender <- ifelse(is.na(data$gender), 1, 0)
+```
+
+Then impute missing values of age column:
+
+```r
+ave_age <- ave(data$age, data$gradyear, FUN = function(x) mean(x, na.rm = TRUE))
+data$age <- ifelse(is.na(data$age), ave_age, teens$age)
+```
+
+If the age if NA, we'll impute current age with mean value age of graduation year.
+
+Train a model:
+
+```r
+library(stats)
+data <- data[, -2]
+sns_model <- kmeans(data, 5)
+```
+
+Now we've built a k-means model with R.
+
+
+<h2 id='ML-Tricks-With-R'>Model Evaluation</h2>
+
+In this section, we are going to introduce how to evaluate an algorithm using R.
+
+###Confusion Matrix
+
+A **Confusion Matrix** is a table that categorize predictions and it's real class. In previous, we've used this metric to evaluate our classifier using this line of code:
+
+```r
+library(gmodels)
+CrossTable(predict_type, original_type, prop.chisq = False)
+```
+
+A **Confusion Matrix** contains 4 parts in general:
+
++ True Positive, correctly classified with class to be expected.
++ True Negative, correctly classified with class not expected.
++ False Positive, misclassified with the class of expected.
++ False Negative, misclassified with the class not expected.
+
+And with this matrix, we are able to calculate the final accuracy rate.
+
+Besides of function **CrossTable**, in R we can also use:
+
+```r
+table(original_type, predicted_type)
+```
+
+to build a **confusion matrix** manually.
+
+###Precision and Recall
+
+This measure is able to provide an indication of how interesting and relevant a model's result are.
+
+**Precision** is the percentage of positive values that are truely positive, that is, precision equals the number of true positive divide the sum of true positive and false positive.
+
+On the ohter hand, **Recall** indicates how complete the result are, that is the number of true positive over the sum of true positive and false negative.
+
+We can calculate this measure by two ways, manually or use package *caret*. According to the confusion matrix we listed before, it is not hard for us to get the number of TP, TF, NP and NF, what we need to do is just to plug-in these values into the Precision/Recall fomular. Another way is like this:
+
+```r
+library(caret)
+posPredValue(predit_type, original_type, positive = "label_of_positive_type")
+```
+
+###F-Score
+
+As it seems to be a bit messy if we use both **Precision** and **Recall**, **F-Score** is a combination of these two metrics into a single number.
+
+```r
+F-Score = (2 * precision * recall)/(precision + recall)
+```
+
+F-measure reduces model performance to a single number, it provides a convenient way to compare several models side-by-side.
+
+###Cross Validation
+
+Our data is not fixed and comes from a random distribution, our model learn from our data, and give us the learned result by the sample data. If we train model based on all data and evaluate model based on the same set, we may end up with over optimistic prediction. So there must exists a set for us to evaluate the model and this set need to be statistically independent.
+
+Varies packages in R allow us using a number of functions for this purpose.
+
+####Hold Out
+
+Except train set and test set, a third dataset need to be seperated named *cross validation set*. It is suggested that:
+
+> The validation dataset would be used for iterating and refining the model or models
+chosen, leaving the test dataset to be used only once as a final step to report an estimated error rate for future predictions. 
+
+There also exists some limitations when we use *hold out*. For example, suppose we have not so much training examples, the propotation of hold out may lead to an un-reliable model.
+
+In R, we mostly generate a random id for observations then construct three part of dataset by filter different id.
+
+####K-Fold-Crossvalidation
+
+K-fold cross validation is a commonly used technique for validate model performance. We first divide data into k folds, and each of the k folds takes turns being the hold-out validation set; a model is trained on the rest of the k 1 folds and measured on the held-out fold. 10-fold cross validation is often used.
+
+This function is already built in *caret package*:
+
+```r
+folds <- createFolds(data, k = 10, list = False)
+str(folds)
+```
+
+####Leave-One-Out
+
+Leave-One-Out is another cross validation technique which always test one single object. LOOCV is essentially the same as K-fold cross validation. This method maxmized train data and cv data, but in some situation, it may be computational expensive.
+
+LOOCV and be done using package *DMwR*, but I didn't implement it myself.
+
+###ROC Curve
+
+The ROC curve (Receiver Operating Characteristic) is commonly used to examine
+the tradeoff between the detection of true positives while avoiding false positives.
+
+The closer the curve is to the perfect classifier, the area under the ROC Curve is larger (named AUC).
+
+In R, we use **ROCR** package to plot ROC Curve.
+
+An example:
+
+```r
+library(ROCR)
+data(ROCR.simple)
+pred <- prediction(ROCR.simple$predictions,ROCR.simple$labels)
+pref <- performance(pred, measure = "tpr", x.measure = "fpr")
+plot(pref, main = "ROC curve for SMS spam filter", col = "blue", lwd = 3)
+abline(a = 0, b = 1, lwd = 2, lty = 2)
+```
+
+Result:
+
+![roc](imgs/roc.png)
+
 <h2 id='R-Functional'>R Functional</h2>
+
+As Hadley Wickham said that
+
+> R, at its heart, is a functional programming (FP) language.
 
 Here is a few examples on how we combine R with high-order funcitons:
 
-In KNN, we implemented *feature scaling* with this line of code:
+In **Knn**, we implemented *feature scaling* with this line of code:
 
 ```r
 normalize <- function(x){
@@ -516,7 +682,7 @@ knn.data.scaled <- as.data.frame(lapply(knn.data[1:2], normalize))
 
 Here, lapply function taks an function named *normalize* as an argument, returns an matrix, then we transforma it into a dataframe.
 
-In Naive Bayes, in order to build a classifier, we need to transform all factor values from 0, 1 to No, Yes, we accomplish by applying a function into another function like this:
+In **Naive Bayes**, in order to build a classifier, we need to transform all factor values from 0, 1 to No, Yes, we accomplish by applying a function into another function like this:
 
 ```r
 convert_counts <- function(x) {
@@ -529,6 +695,21 @@ nb.test <- apply(test.data, MARGIN = 2, convert_counts)
 ```
 
 Here, firstly, we built a function named **convert_counts**, then, by using **apply** function in R, we apply **convert_counts** function to both train.data and test.data.
+
+In **K-means**, as we need to handle with missing values, firstly, we used function *sapply* to check which column has missing vaues:
+
+```r
+sapply(data, function(x) sum(is.na(x)))
+```
+
+We used these lins of code for imipute missing values:
+
+```r
+ave_age <- ave(data$age, data$gradyear, FUN = function(x) mean(x, na.rm = TRUE))
+data$age <- ifelse(is.na(data$age), ave_age, teens$age)
+```
+
+Firstly, we use an **anonymous function** to get the mean value of each class of gradyear, then each time a missing value is found, we call the ave function to impute the missing value.
 
 
 
