@@ -10,7 +10,7 @@ table(nb.data$type)
 #split messages into bag-of-words
 nb.corpus <- Corpus(VectorSource(nb.data$text))
 #clearn remove stop words
-corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(nb.corpus, content_transformer(tolower))
 nb.corpus <- tm_map(nb.corpus, removeNumbers)
 nb.corpus <- tm_map(nb.corpus, removeWords, stopwords())
 nb.corpus <- tm_map(nb.corpus, removePunctuation)

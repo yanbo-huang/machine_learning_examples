@@ -1,7 +1,7 @@
 library(ggplot2)
 library(psych)
 #load data
-data <- read.csv("Downloads/MachineLearning-master/Example Data/OLS_Regression_Example_3.csv", stringsAsFactors=F))
+data <- read.csv("Downloads/MachineLearning-master/Example Data/OLS_Regression_Example_3.csv", stringsAsFactors=F)
 #replace gender with 0 and 1, male and female respectively
 data$Gender[which(data$Gender=="Male")] = 0
 data$Gender[which(data$Gender=="Female")] = 1

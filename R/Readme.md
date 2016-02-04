@@ -641,7 +641,27 @@ LOOCV and be done using package *DMwR*, but I didn't implement it myself.
 
 ###ROC Curve
 
+The ROC curve (Receiver Operating Characteristic) is commonly used to examine
+the tradeoff between the detection of true positives while avoiding false positives.
 
+The closer the curve is to the perfect classifier, the area under the ROC Curve is larger (named AUC).
+
+In R, we use **ROCR** package to plot ROC Curve.
+
+An example:
+
+```r
+library(ROCR)
+data(ROCR.simple)
+pred <- prediction(ROCR.simple$predictions,ROCR.simple$labels)
+pref <- performance(pred, measure = "tpr", x.measure = "fpr")
+plot(pref, main = "ROC curve for SMS spam filter", col = "blue", lwd = 3)
+abline(a = 0, b = 1, lwd = 2, lty = 2)
+```
+
+Result:
+
+![roc](imgs/roc.png)
 
 <h2 id='R-Functional'>R Functional</h2>
 
