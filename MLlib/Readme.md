@@ -1,33 +1,38 @@
-###Machine Learning with Apache Spark
+#Machine Learning with Apache Spark
 
-####Intellij idea configuration for spark:
+##Index
 
-*defult: spark is already in your computer*
+* [Overview of ML with Spark](#Spark-Machine-Learning-Overview)
+* [Implement ML with Spark](#Spark-Machine-Learning)
+* [Model Evaluation](#ML-Tricks-With-Spark)
+* [Combine with High Order Functions](#Scala-Functional)
 
-- Install scala plugin 
-- At the root directory of spark, run "sbt/sbt gen-idea"
-- Create a scala project and write code in the scala script
-- Add spark assembly
-  + Select *File*
-  + Select *Project Structure*
-  + Select *Libraries*
-  + click *+*, add three file types, include *javadocs, classes and jar*, click ok.
-+  In the scala script: 
+<h2 id='Spark-Machine-Learning-Overview'>Spark Machine Learning Overview</h2>
 
-```scala
-    val conf = new SparkConf().setAppName("test").setMaster("local")
-    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-    val sc = new SparkContext(conf)
-    var t0 = System.currentTimeMillis
-    // Main code here //
-    // Main code end //
-    val et = (System.currentTimeMillis - t0) / 1000
-    val mins = et / 60
-    val secs = et % 60
-    println( "{Time taken = %d mins %d secs}".format(mins, secs) )
-```
+MLlib is Spark’s machine learning (ML) library. Its goal is to make practical machine learning scalable and easy. It consists of common learning algorithms and utilities, including classification, regression, clustering, collaborative filtering, dimensionality reduction, as well as lower-level optimization primitives and higher-level pipeline APIs [1].
 
-####Linear Regression
+Recently, spark 1.6 was released, **dataframe** has become the most important data structure instead of **RDD** in the past, and, a number of new machine learning algorithms also available in this new version of apache spark.
+
+Spark-1.6 with pre-built hadoop can be found in TU Delft HTTP, download [here](http://ftp.tudelft.nl/apache/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz).
+
+In this section, we will cover these algorithms: 
+
+- linear models
+  + linear regression
+  + logistic regression
+  + linear svm (max-margin classifier)
+- naive bayes
+- clustering
+  + k-means
+- dimensionality reduction
+  + singular value decomposition (SVD)
+  + principal component analysis (PCA)
+
+<h2 id='Spark-Machine-Learning'>Implement Machine Learning with Spark</h2>
+
+###Linear Regression
+
+Because spark is build for large scale machine learning system, so in mllib it only provided *Stochastic Gradient Descent* linear regression, which is named *linearRegressionWithSGD*.
 
 Load data from csv file and remove the first row:
 
@@ -81,57 +86,7 @@ val ModelError = math.sqrt(MSE)
 println("Model Error = " + ModelError)
 ```
 
-####Principal Component Analysis
-
-Load data from csv and remove the first line:
-
-```scala
-val csvPath = "/Users/wbcha/Downloads/MachineLearning-master/Example Data/PCA_Example_1.csv"
-val rawData = sc.textFile(csvPath)
-//remove the first line (csv head)
-val dataWithoutHead = rawData.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
-```
-
-Split data by comma, and group by date:
-
-```scala
-val dataRdd = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2).toDouble))
-//group data by date
-val groupByDate = dataRdd.groupBy(s => s._1).sortBy(s => s._1)
-```
-
-Generate 2 RDDs, *dateTuple* and *doubleTuple*, then combine them into a new RDD.
-
-```scala
-val dateTuples = groupByDate.map(s => (s._1))
-val rawDoubleTuples = groupByDate.map(s => s._2)
-val doubleTuples = rawDoubleTuples.map(s => s.map(t => t._3))
-//combine dateTuples and doubleTuples
-val finalRdd = dateTuples.zip(doubleTuples)
-```
-
-In order to compute Principal Components, we need to construct a *RowMatrix* in spark:
-
-```scala
-val rows = finalRdd.map(s => s._2).map{line =>
-  val valuesString = line.mkString(",")
-  val values = valuesString.split(",").map(_.toDouble)
-  Vectors.dense(values)
-}
-```
-
-The following code demonstrates how to compute principal components on a RowMatrix and use them to project the vectors into a low-dimensional space:
-
-```scala
-val matrix = new RowMatrix(rows)
-val pc: Matrix = matrix.computePrincipalComponents(1)
-println("Principal components are:\n" + pc)
-```
-
-We are able to get 24 principal components.
-
-
-####Logistic Regression
+###Logistic Regression
 
 As apache MLlib is under construction, they do not provide kernel svm, knn. So we'll implement some existed algorithms with apache spark, first one is Logistic Regression use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
 
@@ -209,7 +164,7 @@ println("Precision = " + precision)
 
 The precision rate equals to 92.98%. This is just an implementation of Logistic Regression with Spark, if we use cross validation set and do some feature engineering work, the precision rate is likely to be larger.
 
-####Linear Regression
+###Linear SVM
 
 As we said before, Spark MLlib do not provide kernel SVM yet, so we continually use sexual-height-weight(OLS_Regression_Example_3.csv) dataset, try to use Linear SVM(Large-Margin Classifier) to seperate sexual according to different weight and height.
 
@@ -272,7 +227,7 @@ val precision = metrics.precision
 println("Precision = " + precision)
 ```
 
-###Kmeans
+###K-means
 
 We continue implement existed algorithms with apache spark, this one is **K-means** use [IRIS](https://en.wikipedia.org/wiki/Iris_flower_data_set) dataset from [UCI](https://archive.ics.uci.edu/ml/datasets/Iris) machine learning repostory. 
 
@@ -312,7 +267,9 @@ println("Within Set Sum of Squared Errors = " + WSSSE)
 ```
 
 Model error equals to 78.86.
+
 ###Naive Bayes
+
 The Naive Bayes part has not been finished yet. So far, we have obtained the top features.
 Get Documents from directory, get message from documents, as well as get and filter useful words from message
 
@@ -347,6 +304,59 @@ val hamDictionary = hamDocumentsTrain.flatMap(x => x.split(" ")).filter(s => s.n
 val hamFeatures = hamDictionary.groupBy(w => w).mapValues(_.size).sortBy(_._2, ascending = false)
 val hamTopFeatures = hamFeatures.map(x => x._1).take(featureAmount)
 ```
+
+###Principal Component Analysis
+
+Load data from csv and remove the first line:
+
+```scala
+val csvPath = "/Users/wbcha/Downloads/MachineLearning-master/Example Data/PCA_Example_1.csv"
+val rawData = sc.textFile(csvPath)
+//remove the first line (csv head)
+val dataWithoutHead = rawData.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+```
+
+Split data by comma, and group by date:
+
+```scala
+val dataRdd = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2).toDouble))
+//group data by date
+val groupByDate = dataRdd.groupBy(s => s._1).sortBy(s => s._1)
+```
+
+Generate 2 RDDs, *dateTuple* and *doubleTuple*, then combine them into a new RDD.
+
+```scala
+val dateTuples = groupByDate.map(s => (s._1))
+val rawDoubleTuples = groupByDate.map(s => s._2)
+val doubleTuples = rawDoubleTuples.map(s => s.map(t => t._3))
+//combine dateTuples and doubleTuples
+val finalRdd = dateTuples.zip(doubleTuples)
+```
+
+In order to compute Principal Components, we need to construct a *RowMatrix* in spark:
+
+```scala
+val rows = finalRdd.map(s => s._2).map{line =>
+  val valuesString = line.mkString(",")
+  val values = valuesString.split(",").map(_.toDouble)
+  Vectors.dense(values)
+}
+```
+
+The following code demonstrates how to compute principal components on a RowMatrix and use them to project the vectors into a low-dimensional space:
+
+```scala
+val matrix = new RowMatrix(rows)
+val pc: Matrix = matrix.computePrincipalComponents(1)
+println("Principal components are:\n" + pc)
+```
+
+We are able to get 24 principal components.
+
+<h2 id='ML-Tricks-With-Spark'>Model Evaluation</h2>
+
+<h2 id='Scala-Functional'>Scala Functional</h2>
 
 
 
