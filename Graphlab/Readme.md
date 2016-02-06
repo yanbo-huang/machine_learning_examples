@@ -22,7 +22,6 @@ Graphlab Create provides essential machine learning models, in this section, we 
 
 <h2 id='GL-Machine-Learning'>Implement Machine Learning With Graphlab</h2>
 
-##Machine Learning with Graphlab
 ###Linear Regression
 
 Creating regression models is easy with GraphLab Create, toolbox of GL contains several regression models. In the first part, we keep on to use sexual, height to predict human's weight.
@@ -190,6 +189,8 @@ We can see that the accuracy rate is 87.8%, this is beacause many points are ove
 
 ###Kmeans
 
+K-means finds cluster centers for a predetermined number of clusters **K** by minimizing the sum of squared distances from each point to its assigned cluster. Points are assigned to the cluster whose center is closest.
+
 This time, we still use *Iris* dataset without label column, try to do some cluster analysis and seperate flowers using unsupervised algorithm -- Kmeans.
 
 As we have already know that the flower can be seperated into 3 groups, so we set k = 3.
@@ -220,7 +221,7 @@ cluster_result = model.cluster_id
 cluster_result
 ```
 
-###KNN
+###K-nearest-neighbour
 
 Firstly, import graphlab library and load data:
 
@@ -269,5 +270,61 @@ From result we can see that point [5.3,4.3] was predicted as 0 in 4 out of 5 tim
 ![knn-unknownpoint](img/knn2.png)
 
 <h2 id='ML-Tricks-With-GL'>Model Evaluation</h2>
+
+###RMSE
+
+For regression tasks, the most commonly used technique for evaluate a machine learning algorithm is **Root Mean Squared Error**, this is defined as the square root of the average squared distance between the actual score and the predicted score.
+
+In graphlab, if we have made predictions, it is possible to calculate the rmse error based on original label and predictions using this line of code:
+
+```python
+graphlab.evaluate.rmse(label_vector, prediction_vector)
+```
+###Accuracy
+
+For most calssification tasks, accuracy rate is the most intutive way for evaluate an algorithm. It’s the ratio between the number of correct predictions and the total number of predictions (the number of test data points).
+
+In graphlab create, this can be done with:
+
+```python
+graphlab.evaluate.accuracy(label_vector, prediction_vector)
+```
+
+###Confusion Matrix
+
+Accuracy rate looks intuitive in most cases, but if we want to know more about a classifier on more detailed information, a **Confusion Matrix** shows correct and incorrect classifications for each class.
+
+Graphlab also provide easy way to return a confusion matrix:
+
+```python
+graphlab.evaluate.confusion_matrix(label_vector, prediction_vector)
+```
+
+###Precision-Recall
+
+This measure is able to provide an indication of how interesting and relevant a model's result are.
+
+**Precision** is the percentage of positive values that are truely positive, that is, precision equals the number of true positive divide the sum of true positive and false positive.
+
+On the ohter hand, **Recall** indicates how complete the result are, that is the number of true positive over the sum of true positive and false negative.
+
+```python
+pr_score   = graphlab.evaluation.precision(targets, predictions)
+rec_score  = graphlab.evaluation.recall(targets, predictions)
+```
+
+###F1-Score
+
+As it seems to be a bit messy if we use both **Precision** and **Recall**, **F-Score** is a combination of these two metrics into a single number.
+
+F-measure reduces model performance to a single number, it provides a convenient way to compare several models side-by-side.
+
+```python
+graphlab.evaluation.f1_score(targets, predictions)
+```
+
+###ROC Curve
+
+
 
 <h2 id='GL-Functional'>Functional Programming with Python</h2>
