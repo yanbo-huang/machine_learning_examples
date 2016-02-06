@@ -3,7 +3,9 @@ This Readme file illustrates how to implement naive bayes using NLTK based on th
 
 [NLTK](http://www.nltk.org/), Natural Language Toolkit is a useful toolkit to work with natural language
 * [Naive Bayes](#naive-bayes)
-## Naive Bayes
+
+##Naive Bayes
+
 Get files from directory
 ```python
 def getFilesFromDir (path):
