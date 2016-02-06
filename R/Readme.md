@@ -323,7 +323,7 @@ pca.model = prcomp(data[,2:ncol(data)])
 PC1 <- pca.model$x[,"PC1"]
 ```
 
-Add a date duration column for visualize data:
+Add a date duration column for data visualization:
 
 ```r
 duration <- 1:nrow(PC1)
@@ -710,6 +710,3 @@ data$age <- ifelse(is.na(data$age), ave_age, teens$age)
 ```
 
 Firstly, we use an **anonymous function** to get the mean value of each class of gradyear, then each time a missing value is found, we call the ave function to impute the missing value.
-
-
-
