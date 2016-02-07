@@ -11,7 +11,8 @@ Get files from directory
 def getFilesFromDir (path):
     dir_content = os.listdir(path)
     dir_clean = filter(lambda x: (".DS_Store" not in x) and ("cmds" not in x), dir_content)
-    return dir_clean
+    msg = map(lambda x: getMessage(path + '/' + x), dir_clean)
+    return msg
 ```
 Get message from file
 ```python
@@ -45,18 +46,14 @@ def getFeatures(file_msg, **kwargs):
     file_msg_words = getMessageWords(file_msg, **kwargs)
     words_list = nltk.FreqDist(file_msg_words)
     words_list_common = words_list.most_common()
-    topFeatures = ["" for x in range(amountOfFeaturesPerSet)]
-    for index in range(amountOfFeaturesPerSet):
-        topFeatures[index]= words_list_common[index][0]
+    topFeatures = map(lambda x: x[0], words_list_common[:amountOfFeaturesPerSet])
     return topFeatures
 ```
 Get feature labels
 ```python
 def getFeaturesLabel(file_msg, label, allFeature, feature_extractor, **kwargs):
-    features_label = []
-    for w in file_msg:
-        features = feature_extractor(w, allFeature, **kwargs)
-        features_label.append((features, label))
+    features = map(lambda x: feature_extractor(x, allFeature, **kwargs), file_msg)
+    features_label = map(lambda x: (x, label), features)
     return features_label
 ```
 Words Indicator: true for words in the dictionary
