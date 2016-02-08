@@ -3,6 +3,7 @@ This Readme file illustrates how to implement naive bayes using NLTK based on th
 
 [NLTK](http://www.nltk.org/), Natural Language Toolkit is a useful toolkit to work with natural language
 * [Naive Bayes](#naive-bayes)
+* [Recommendation System](#recommend-system)
 
 ##Naive Bayes
 Some part of the code referred from [Machine Learning for Hackers Chapter 3: Naive Bayes Text Classification] (http://slendermeans.org/ml4h-ch3.html)
@@ -91,3 +92,5 @@ Run the code several times and change amount of features to take, we get the fol
 | 100                               | 97.92%                  | 2.08% |
 | 200                               | 98.85%                  | 1.15% |
 | 400                               | 99.07%                  | 0.93% |
+
+##Recommendation System
