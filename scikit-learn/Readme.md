@@ -236,6 +236,7 @@ def getStopWords (path):
     return lines
 ```
 Establish Term Document Matrix using sklearn.feature_extraction.text.TfidfVectorizer
+
 Get ham/spam features, here take ham as example
 ```python
 vector = TfidfVectorizer(stop_words = stop_words_given,
@@ -253,7 +254,7 @@ vector3 = TfidfVectorizer(decode_error = 'ignore',
 words_counts3 = vector3.fit_transform(emailTrainDir)
 words_counts3 = words_counts3.toarray()
 ```
-train: Multinomial Naive Bayes with y is the corresponding label of the train set, in which ham label is 0, spam label is 1.
+Train: multinomial Naive Bayes with y is the corresponding label of the train set, in which ham label is 0, spam label is 1.
 ```python 
 clf = MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True).fit(words_counts3, y)
 ```
@@ -261,7 +262,7 @@ Ham/spam test, here take ham as example
 ```python
 new_counts = vector3.transform(hamTestDir)
 ```
-ham/spam prediction and accuracy score, here take ham as example
+Ham/spam prediction and accuracy score, here take ham as example
 ```python
 predicted = clf.predict(new_counts)
 accu_score = clf.score(new_counts, y1)
