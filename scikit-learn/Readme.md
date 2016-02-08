@@ -211,47 +211,57 @@ Get files from directory
 def getFilesFromDir (path):
     dir_content = os.listdir(path)
     dir_clean = filter(lambda x: (".DS_Store" not in x) and ("cmds" not in x), dir_content)
-    return dir_clean
+    msg = map(lambda x: getMessage(path + '/' + x), dir_clean)
+    return msg
 ```
 Get message from file
 ```python
 def getMessage (file_list, path, amount_of_samples):
+    fo = open (path)
+    lines = fo.readlines()
+    fo.close()
     #...
     #Regular expresssion process and keep words and spaces in the string
-    str2 = re.sub(r'([^\s\w]|_)+', '', str1)
+    lines = re.sub('3D', '', lines)
+    lines = re.sub(r'([^\s\w]|_)+', '', lines)
     #...
 ```
 Get stopwords
 ```python
 def getStopWords (path):
-    #...
+    fo = open (path)
+    lines = fo.readlines()
+    lines = map(lambda x: str.replace(x, '\n', ''), lines)
+    fo.close()
+    return lines
 ```
-Establish TDM using sklearn.feature_extraction.text.CountVectorizer
-Get ham/spam features
+Establish Term Document Matrix using sklearn.feature_extraction.text.TfidfVectorizer
+Get ham/spam features, here take ham as example
 ```python
-vector = CountVectorizer(stop_words = stop_words_given,
+vector = TfidfVectorizer(stop_words = stop_words_given,
                          analyzer='word',
                          decode_error = 'ignore',
                          max_features = amountOfFeaturesToTake)
-words_counts = vector.fit_transform(str_clean_ham)
+words_counts = vector.fit_transform(hamTrainDir)
 words_counts = words_counts.toarray()
 feature_ham = vector.get_feature_names()
 ```
-Establish TDM
+Term Document Matrix
 ```python 
-vector3 = CountVectorizer(decode_error = 'ignore',
+vector3 = TfidfVectorizer(decode_error = 'ignore',
                           vocabulary = feature_email)
-words_counts3 = vector3.fit_transform(email_words_list)
+words_counts3 = vector3.fit_transform(emailTrainDir)
+words_counts3 = words_counts3.toarray()
 ```
 train: Multinomial Naive Bayes with y is the corresponding label of the train set, in which ham label is 0, spam label is 1.
 ```python 
 clf = MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True).fit(words_counts3, y)
 ```
-ham/spam test
+Ham/spam test, here take ham as example
 ```python
-new_counts = vector3.transform(str_clean_ham2)
+new_counts = vector3.transform(hamTestDir)
 ```
-ham/spam prediction and accuracy score
+ham/spam prediction and accuracy score, here take ham as example
 ```python
 predicted = clf.predict(new_counts)
 accu_score = clf.score(new_counts, y1)
@@ -259,19 +269,19 @@ accu_score = clf.score(new_counts, y1)
 
 Run the code several times and change amount of features to take, we get the following results:
 ###Ham Result
-| Amount of Features to take        | Ham (Correct)           | Spam  |
+| Amount of Features to take        | Ham (Correct)           | Spam (Incorrect) |
 | ----------------------------------|:-----------------------:| -----:|
-| 50                                | 95.90%                  | 4.10% |
-| 100                               | 97.34%                  | 2.66% |
-| 200                               | 98.06%                  | 1.94% |
-| 400                               | 98.49%                  | 1.51% |
+| 50                                | 94.07%                  | 5.93% |
+| 100                               | 96.50%                  | 3.50% |
+| 200                               | 97.71%                  | 2.29% |
+| 400                               | 98.14%                  | 1.86% |
 ###Spam Result
-| Amount of Features to take        | Spam (Correct)          | Ham   |
+| Amount of Features to take        | Spam (Correct)          | Ham (Incorrect) |
 | ----------------------------------|:-----------------------:| -----:|
-| 50                                | 75.32%                  | 24.68%|
-| 100                               | 84.24%                  | 15.76%|
-| 200                               | 86.04%                  | 13.96%|
-| 400                               | 90.29%                  | 9.71% |
+| 50                                | 82.82%                  | 17.18%|
+| 100                               | 89.48%                  | 10.52%|
+| 200                               | 90.05%                  | 9.95% |
+| 400                               | 93.27%                  | 6.73% |
 
 
 ## K Nearest Neighbor
