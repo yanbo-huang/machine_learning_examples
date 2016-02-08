@@ -5,7 +5,7 @@ This Readme file illustrates how to implement naive bayes using NLTK based on th
 * [Naive Bayes](#naive-bayes)
 
 ##Naive Bayes
-
+Some part of the code referred from [Machine Learning for Hackers Chapter 3: Naive Bayes Text Classification] (http://slendermeans.org/ml4h-ch3.html)
 Get files from directory
 ```python
 def getFilesFromDir (path):
