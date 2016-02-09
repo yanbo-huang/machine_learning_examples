@@ -95,6 +95,7 @@ Run the code several times and change amount of features to take, we get the fol
 
 
 ##Recommendation System
+
 Firsty, we need to process the email to get the information we need.
 
 Get files from directory
@@ -158,7 +159,7 @@ def getStopWords (path):
     fo.close()
     return lines
 ```
-Then, we group the email by sender, in this part, we import the pandas and numpy package to deal with data, and import the matplotlib to plot the bar chart.
+Then, we group the email by sender, in this part, we import the pandas and numpy package to deal with data, and import the matplotlib to plot the bar chart. Also, from the data, we find the numeric value ranges from (0.69, 6.43).
 
 Bar plot
 ```python
@@ -172,7 +173,5 @@ index = np.arange(len(y_array))
 bar_sender = plt.bar(index, y_array, bar_width, alpha=opacity, color='b')
 ```
 <img src='imgs\bar1.png' height='300'>
-
-Also, from the data, we find the numeric value ranges from (0.69, 6.43).
 
 Next, we group the email by subject. 
