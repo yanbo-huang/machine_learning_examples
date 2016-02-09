@@ -174,4 +174,6 @@ bar_sender = plt.bar(index, y_array, bar_width, alpha=opacity, color='b')
 ```
 <img src='imgs\bar1.png' height='300'>
 
-Next, we group the email by subject. 
+Next, we group the email by subject. Also, after we use the log1p to re-scale the data, we find the numeric value ranges from (0.69, 3.33). The code part is similar as the one in the previous part.
+
+<img src='imgs\bar2.png' height='300'>
