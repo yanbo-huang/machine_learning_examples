@@ -93,6 +93,7 @@ Run the code several times and change amount of features to take, we get the fol
 | 200                               | 98.85%                  | 1.15% |
 | 400                               | 99.07%                  | 0.93% |
 
+
 ##Recommendation System
 Firsty, we need to process the email to get the information we need.
 
@@ -171,6 +172,7 @@ index = np.arange(len(y_array))
 bar_sender = plt.bar(index, y_array, bar_width, alpha=opacity, color='b')
 ```
 <img src='imgs\bar1.png' height='300'>
+
 Also, from the data, we find the numeric value ranges from (0.69, 6.43).
 
 Next, we group the email by subject. 
