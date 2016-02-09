@@ -161,7 +161,7 @@ def getStopWords (path):
 ```
 Then, we group the email by sender, in this part, we import the pandas and numpy package to deal with data, and import the matplotlib to plot the bar chart. Also, from the data, we find the numeric value ranges from (0.69, 6.43).
 
-Bar plot
+Sender bar plot
 ```python
 x = df['sender_describe'].tolist()
 y = df['sender_values'].tolist()
@@ -175,5 +175,15 @@ bar_sender = plt.bar(index, y_array, bar_width, alpha=opacity, color='b')
 <img src='imgs\bar1.png' height='300'>
 
 Next, we group the email by subject. Also, after we use the log1p to re-scale the data, we find the numeric value ranges from (0.69, 3.33). The code part is similar as the one in the previous part.
+Subject bar plot
+```python
+x = df_subject['subject_describe'].tolist()
+y = df_subject['subject_values'].tolist()
 
+y_array = np.array(y)
+y_array = map(lambda value: np.log1p(value), y_array)
+index = np.arange(len(y_array))
+#...
+bar_subject = plt.bar(index, y_array, bar_width, alpha=opacity, color='b')
+```
 <img src='imgs\bar2.png' height='300'>
