@@ -94,3 +94,83 @@ Run the code several times and change amount of features to take, we get the fol
 | 400                               | 99.07%                  | 0.93% |
 
 ##Recommendation System
+Firsty, we need to process the email to get the information we need.
+
+Get files from directory
+```python
+def getFilesFromDir (path):
+    dir_content = os.listdir(path)
+    dir_clean = filter(lambda x: (".DS_Store" not in x) and ("cmds" not in x), dir_content)
+    msg = map(lambda x: getFullMessage(path + '/' + x), dir_clean)
+    return msg
+```
+Get full email message 
+```python
+def getFullMessage (path):
+    fo = open (path)
+    lines = fo.readlines()
+    fo.close()
+    lines = ''.join(lines)
+    return lines
+```
+Get email subject
+```python
+def getSubjectFromEmail (path):
+    lines = getFilesFromDir(path)
+    #subject index and subject end index
+    subject = map(lambda x: x[x.index('Subject:')+8: len(x)], lines)
+    subject = map(lambda x: x[: x.index('\n')], subject)
+    subject = map(lambda x: x.lower(), subject)
+    subject = map(lambda x: re.sub('re:', '', x), subject)
+    return subject
+```
+Get email sender
+```python
+def getSenderFromEmail (path):
+    lines = getFilesFromDir(path)
+    sender = map(lambda x: x[x.index('From:'): len(x)], lines)
+    sender = map(lambda x: x[: x.index('\n')], sender)
+    for index in range(len(sender)):
+        if '<' in sender[index]:
+            sender[index] = sender[index][sender[index].index('<')+1: sender[index].index('>')]
+        else:
+            sender[index] = sender[index][sender[index].index('From:') + 5: ]
+            if '(' in sender[index]:
+                sender[index] = sender[index][: sender[index].index('(')]
+        sender[index] = re.sub(' ', '', sender[index])
+    return sender
+```
+Get email date
+```python
+def getDateFromEmail (path):
+    lines = getFilesFromDir(path)
+    date = map(lambda x: x[x.index('Date:')+5: len(x)], lines)
+    date = map(lambda x: x[: x.index('\n')], date)
+    return date
+``` 
+Get stop words
+```python
+def getStopWords (path):
+    fo = open (path)
+    lines = fo.readlines()
+    lines = map(lambda x: str.replace(x, '\n', ''), lines)
+    fo.close()
+    return lines
+```
+Then, we group the email by sender, in this part, we import the pandas and numpy package to deal with data, and import the matplotlib to plot the bar chart.
+
+Bar plot
+```python
+x = df['sender_describe'].tolist()
+y = df['sender_values'].tolist()
+y_array = np.array(y)
+#Use numpy function log1p to re-scale the data
+y_array = map(lambda value: np.log1p(value), y_array)
+index = np.arange(len(y_array))
+#...
+bar_sender = plt.bar(index, y_array, bar_width, alpha=opacity, color='b')
+```
+<img src='imgs\bar1.png' height='300'>
+Also, from the data, we find the numeric value ranges from (0.69, 6.43).
+
+Next, we group the email by subject. 
