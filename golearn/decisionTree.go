@@ -6,13 +6,11 @@ import (
 	"github.com/sjwhitworth/golearn/ensemble"
 	"github.com/sjwhitworth/golearn/evaluation"
 	"github.com/sjwhitworth/golearn/trees"
-	"math/rand"
 )
 
 func main() {
 
 	var tree base.Classifier
-	rand.Seed(44111342)
 
 	iris, err := base.ParseCSVToInstances("iris_headers.csv", true)
 	if err != nil {

@@ -95,3 +95,98 @@ The result is:
 <img src="imgs/lr.jpg" height="200" >
 
 So, the prediction for Male of 170cm is 79.42kg, and the prediction for Female of 170cm is 70.40kg.
+
+## Decison Tree
+
+Decision tree is a method for approximating discrete-valued target functions, in which the learned function is represented by a decision tree. Learned tree can also be represented as sets of if-then rules to improve human readability.
+
+Here, taking part of iris dataset for the input. The features are petal's length , petal's width, sepal's length, and sepal's width. The class of this dataset is the species of that object.
+
+loading the iris dataset and split it into trainning and testing datasets with the splitting ratio equals 0.6.
+
+```go
+iris, err := base.ParseCSVToInstances("iris_headers.csv", true)
+if err != nil {
+	panic(err)
+}
+// training-test split
+trainData, testData := base.InstancesTrainTestSplit(iris, 0.60)
+```
+
+Here, we test two algorithms wildly used in Decision Tree learning, one is ID3(Iterative Dichotomiser 3), and another one is Random forest.
+
+Firstly, creating and training a ID3 model:
+
+```go
+tree = trees.NewID3DecisionTree(0.6)
+// Train the ID3 tree
+err = tree.Fit(trainData)
+if err != nil {
+	panic(err)
+}
+```
+Here, one thing should be noticed is that the function of the parameter inside *trees.NewID3DecisionTree* is for controling the train-prune split.
+
+Secondly, using the testdata to test the trained ID3 model, and creating a confusion matrix. Then, build a F1 score table based on this confusion matrix.
+
+```go
+// Generate predictions
+predictions, err := tree.Predict(testData)
+if err != nil {
+	panic(err)
+}
+
+// Evaluate
+fmt.Println("ID3 Performance (information gain)")
+cf, err := evaluation.GetConfusionMatrix(testData, predictions)
+if err != nil {
+	panic(fmt.Sprintf("Unable to get confusion matrix: %s", err.Error()))
+}
+fmt.Println(evaluation.GetSummary(cf))
+```
+|Reference Class |True Positives|False Positives|True Negatives|Precision|Recall|F1 Score
+|:---------------:|:--------------:|:---------------:|:--------------:|:---------:|:------:|:--------
+Iris-virginica|26|		1|		52|		0.9630|		0.8387|	0.8966
+Iris-versicolor|	20|		11|		48|		0.6452|		0.8000|	0.7143
+Iris-setosa|	21|		5|		51|		0.8077|		0.7500|	0.7778|
+
+> Overall accuracy: **0.7976**
+
+A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset and use averaging to improve the predictive accuracy and control over-fitting. Since the overall accuracy is not desirable and the size of the iris dataset used here is quit small, we trained a random forest model to check whether there is any improvement of the overall accuracy. 
+
+Being same as ID3 model, we fited the a new random forest model using the trainning dataset. The values 70 and 3 here stands for the *forestSize* and the *features* respectively. The *forestSize* controls the number of trees that get built
+and the *features* controls the number of features used to build each tree.
+
+```go
+tree = ensemble.NewRandomForest(70, 3)
+err = tree.Fit(trainData)
+if err != nil {
+	panic(err)
+}
+```
+Then, predicting the results, building confusion matrix and generating F1 score.
+
+```go
+predictions, err = tree.Predict(testData)
+if err != nil {
+	panic(err)
+}
+fmt.Println("RandomForest Performance")
+cf, err = evaluation.GetConfusionMatrix(testData, predictions)
+if err != nil {
+	panic(fmt.Sprintf("Unable to get confusion matrix: %s", err.Error()))
+}
+fmt.Println(evaluation.GetSummary(cf))
+```
+
+The final results are in the talbe as follows:
+
+|Reference Class |True Positives|False Positives|True Negatives|Precision|Recall|F1 Score
+|:---------------:|:--------------:|:---------------:|:--------------:|:---------:|:------:|:--------
+Iris-virginica|	29|		3|		64|		0.9062|		0.9062|	0.9062
+Iris-setosa|	35|		0|		64|		1.0000|		1.0000|	1.0000
+Iris-versicolor|	29|		3|		64|		0.9062|		0.9062|	0.9062
+
+> Overall accuracy: **0.9394**
+
+It clearly to say that the random forest algorithm significantly rised model's overall accuracy and F1 score.
