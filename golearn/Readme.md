@@ -6,6 +6,7 @@ This Readme file illustrates how to implement several machine learning algorithm
 * [K-Nearest Neighbors](#k-nearest-neighbors)
 * [Linear Regression](#linear-regression)
 * [Decision Tree](#decision-tree)
+
 ## Enviroment Configurations
 
 1. Go Enviroment
@@ -98,7 +99,7 @@ The result is:
 
 So, the prediction for Male of 170cm is 79.42kg, and the prediction for Female of 170cm is 70.40kg.
 
-## Decison Tree
+## Decision Tree
 
 Decision tree is a method for approximating discrete-valued target functions, in which the learned function is represented by a decision tree. Learned tree can also be represented as sets of if-then rules to improve human readability.
 
