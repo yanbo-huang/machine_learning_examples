@@ -6,6 +6,7 @@ This Readme file illustrates how to implement several machine learning algorithm
 * [K-Nearest Neighbors](#k-nearest-neighbors)
 * [Linear Regression](#linear-regression)
 * [Decision Tree](#decision-tree)
+* [Logistic Regression](#logistic-regression)
 
 ## Enviroment Configurations
 
@@ -194,3 +195,37 @@ Iris-versicolor|	29|		3|		64|		0.9062|		0.9062|	0.9062
 > Overall accuracy: **0.9394**
 
 It is clear to say that the random forest algorithm significantly rised model's overall accuracy and F1 score.
+
+## Logistic Regression
+
+Since the golearn library is incompleted, we implemented *logistic regression* algorithm of binary class case using **iris** dataset. 150 subjects were splited out from original dataset, and the class labels were replaced to *0.0* and *1.0*. Here, we implemented the algorithm using the new created dataset *iris1*.
+
+Firstly, loading dataset and splitting it into trainning and testing sets.
+
+```go
+rawData, err := base.ParseCSVToInstances("iris1.csv", true)
+if err != nil {
+	panic(err)
+}
+
+trainData, testData := base.InstancesTrainTestSplit(rawData, 0.10)
+```
+
+Then, fitting the logistic regression model and making prediction.
+
+```python
+lr, err := linear_models.NewLogisticRegression("l2", 1.0, 1e-6)
+lr.Fit(trainData)
+predictions, err := lr.Predict(testData)
+if err != nil {
+	panic(err)
+}
+```
+Finally, a confusion matrix were generated,and a F1 scores were gotten based this matrix.
+
+|Reference Class |True Positives|False Positives|True Negatives|Precision|Recall|F1 Score
+|:---------------:|:--------------:|:---------------:|:--------------:|:---------:|:------:|:--------
+0.0	|	5|		0|		5|		1.0000|		1.0000|	1.0000
+1.0|		5|		0|		5|		1.0000|		1.0000|	1.0000
+
+> Overall accuracy: **1.0000**
