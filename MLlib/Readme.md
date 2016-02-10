@@ -25,7 +25,6 @@ In this section, we will cover these algorithms:
 - clustering
   + k-means
 - dimensionality reduction
-  + singular value decomposition (SVD)
   + principal component analysis (PCA)
 
 <h2 id='Spark-Machine-Learning'>Implement Machine Learning with Spark</h2>
