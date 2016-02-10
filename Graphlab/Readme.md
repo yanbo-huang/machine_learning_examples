@@ -187,6 +187,47 @@ evaluation['confusion_matrix']
 
 We can see that the accuracy rate is 87.8%, this is beacause many points are overlapped, add more features is likely to help.
 
+###Random Forest
+
+The random forest model is a type of additive model that makes predictions by combining decisions from a sequence of base models.
+
+Random Forest classifier is one of the most effective machine learning models for predictive analytics. It is very good at handling tabular data with numerical features, or categorical features with fewer than hundreds of categories. 
+
+In this part, I keep use *iris* dataset for classification with **RandomForest**.
+
+```python
+import graphlab
+data = graphlab.SFrame.read_csv("Desktop/Q1 Course/FP/MachineLearningSamples/extra-data/iris.csv")
+```
+
+After load the data, we split it into train and test set:
+
+```python
+train_data, test_data = data.random_split(0.8)
+```
+
+Then train a random forest classifier. In graphlab, one can not only use random forest for regression work, but also available for classification task, just with 2 different functions:
+
+```python
+random_forest_regression
+random_forest_classifier
+```
+
+In this context, we use *random_forest_classifier* for classification task:
+
+```python
+model = graphlab.random_forest_classifier.create(train_data, target = "species",  max_depth = 3)
+```
+
+Predict result and evaluate the classifier:
+
+```python
+predictions = model.predict(test_data)
+model.evaluate(test_data)
+```
+
+According to the evaluation, we can know that the accuracy rate of random_forest is 96.87%, which works really well on this dataset.
+
 ###Kmeans
 
 K-means finds cluster centers for a predetermined number of clusters **K** by minimizing the sum of squared distances from each point to its assigned cluster. Points are assigned to the cluster whose center is closest.
@@ -325,6 +366,18 @@ graphlab.evaluation.f1_score(targets, predictions)
 
 ###ROC Curve
 
+The ROC curve (Receiver Operating Characteristic) is commonly used to examine the tradeoff between the detection of true positives while avoiding false positives.
 
+The closer the curve is to the perfect classifier, the area under the ROC Curve is larger (named AUC).
+
+In graphlab, this can be done by:
+
+```python
+roc_curve = graphlab.evaluation.roc_curve(targets, predictions)
+```
+
+And this will return a SFrame contains true positive rate, false positive rate and data points. 
 
 <h2 id='GL-Functional'>Functional Programming with Python</h2>
+
+This part was written together with **Scikit Learn**.
