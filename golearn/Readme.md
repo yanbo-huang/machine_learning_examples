@@ -4,6 +4,8 @@ This Readme file illustrates how to implement several machine learning algorithm
 
 * [Enviroment Configurations](#enviroment-configurations)
 * [K-Nearest Neighbors](#k-nearest-neighbors)
+* [Linear Regression](#linear-regression)
+* [Decision Tree](#decision-tree)
 ## Enviroment Configurations
 
 1. Go Enviroment
@@ -189,4 +191,4 @@ Iris-versicolor|	29|		3|		64|		0.9062|		0.9062|	0.9062
 
 > Overall accuracy: **0.9394**
 
-It clearly to say that the random forest algorithm significantly rised model's overall accuracy and F1 score.
+It is clear to say that the random forest algorithm significantly rised model's overall accuracy and F1 score.
