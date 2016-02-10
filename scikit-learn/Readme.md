@@ -333,7 +333,7 @@ Internet Service Provider Alpha
 
 The most of workload of this project lie on dataset pre-processing. In the pre-processing part, we implemented some functional programming concepts when dealing with operations ralated to *list*, such as *map*, *reduce*, *filter*, and *list comprehension*. Here we list some examples where we were thinking in functional programming. 
 
-In the *svm_gaussian* part,when dealing with the kernal perameter $\gamma$ and $\sigma$, we have: $\gamma= \frac{1}{2\sigma^2}$. We are supplied with a list of $\sigma$. Here we used the function *map* to implify $\gamma= \frac{1}{2\sigma^2}$ for every element in $\sigma$ list:
+In the *svm_gaussian* part,when dealing with the kernal perameter *gamma* and *sigma*, we have: *gamma= 1/(2xsigma^2)*. We are supplied with a list of *sigma*. Here we used the function *map* to implify *gamma= 1/(2xsigma^2)* for every element in *sigma* list:
 ```python
 gammas = map(lambda x: 1.0/(2.0*x**2), sigmas)
 ```
