@@ -8,7 +8,7 @@ This Readme file illustrates how to implement several machine learning algorithm
 * [Principal Component Analysis](#principal-component-analysis)
 * [Naive Bayes](#naive-bayes)
 * [K Nearest Neighbor](#k-nearest-neighbor)
-
+* [Functional Programming Elements](#functional-programming-elements)
 
 ## Linear Regression
 Importing and reading csv data
@@ -328,3 +328,39 @@ prediction=neigh.predict(unknownPoint)
 result: 
 the mean accuracy on the given test data and labels is 0.860000
 Internet Service Provider Alpha
+
+## Functional Programming Elements
+
+The most of workload of this project lie on dataset pre-processing. In the pre-processing part, we implemented some functional programming concepts when dealing with operations ralated to *list*, such as *map*, *reduce*, *filter*, and *list comprehension*. Here we list some examples where we were thinking in functional programming. 
+
+In the *svm_gaussian* part,when dealing with the kernal perameter $\gamma$ and $\sigma$, we have: $\gamma= \frac{1}{2\sigma^2}$. We are supplied with a list of $\sigma$. Here we used the function *map* to implify $\gamma= \frac{1}{2\sigma^2}$ for every element in $\sigma$ list:
+```python
+gammas = map(lambda x: 1.0/(2.0*x**2), sigmas)
+```
+Similarly, the concept of **list comprehension** was used in *svm_poly* part:
+
+```python
+gammas = [ 1.0/(2.0*x**2) for x in sigmas ]
+```
+
+In both *svm_gaussian* and *svm_poly* parts, we used **reduce** function to find the min value of FCR:
+
+```python
+FCR_min = reduce(lambda a,b: a if (a < b) else b, FCR)
+```
+
+When realizing the *Naive Bayes* algorithm, the files given us have two uselessful file types, *.DS_store* and *.cmds*. Here, we used *filter* function to ignore these files when reading the initial datasets:
+
+```python
+dir_clean = filter(lambda x: (".DS_Store" not in x) and ("cmds" not in x), dir_content)
+msg = map(lambda x: getMessage(path + '/' + x),dir_clean)
+``` 
+What's more, some parts in *Naive Bayes* implementation used **map** fucntion to deal with path operations for replecing *for* loop,such as:
+
+```python
+msg = map(lambda x: getMessage(path + '/' + x), dir_clean)
+```
+
+```python
+lines = map(lambda x: str.replace(x, '\n', ''), lines)
+```
