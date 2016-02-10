@@ -349,7 +349,7 @@ In both *svm_gaussian* and *svm_poly* parts, we used **reduce** function to find
 FCR_min = reduce(lambda a,b: a if (a < b) else b, FCR)
 ```
 
-When realizing the *Naive Bayes* algorithm, the files given us have two uselessful file types, *.DS_store* and *.cmds*. Here, we used *filter* function to ignore these files when reading the initial datasets:
+When realizing the *Naive Bayes* algorithm, the files given us have two uselessful file types, *.DS_store* and *.cmds*. Here, we used **filter** function to ignore these files when reading the initial datasets:
 
 ```python
 dir_clean = filter(lambda x: (".DS_Store" not in x) and ("cmds" not in x), dir_content)
