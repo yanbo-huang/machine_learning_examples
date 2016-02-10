@@ -64,6 +64,7 @@ Then based on this table,we generate a Overall accuracy to discribe the reliabil
 fmt.Println(evaluation.GetSummary(confusionMat))
 ```
 In this example, *Overall accuracy* is **0.9310**
+
 ## Linear regression
 
 Since the *golearn* library didn't opitimize it's linear regression algorithm, it consumes much time to run. We can see that the length of our dataset is 10000 and we only have 2 features (gender and height), so it is reasonable for us to simply it,here we reduce the original dataset to 1000 male data and 1000 female data to decrease the running time.
