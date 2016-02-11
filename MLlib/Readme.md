@@ -402,6 +402,26 @@ val auROC = metrics.areaUnderROC
 
 <h2 id='Scala-Functional'>Scala Functional</h2>
 
+Scala is a full-blown functional language, and most of our code in Mllib is functional style. For example:
+
+In Pca algorithm, in order to combine two data RDD, we applied zip function like this:
+
+```scala
+val finalRdd = dateTuples.zip(doubleTuples)
+```
+
+Function **zip** produces a new list by pairing successive elements
+from two existing lists until either or both are exhausted.
+
+We applied a bunch of **map** function during the data pre-processing task, for example:
+
+```scala
+val dataRdd = dataWithoutHead.map(s => (s.split(",")(0), s.split(",")(1), s.split(",")(2).toDouble))
+```
+
+Here, we splited the original RDD by comma and map the result into a new RDD for further process.
+
+
 
 
 
