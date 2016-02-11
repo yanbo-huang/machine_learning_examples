@@ -355,6 +355,51 @@ We are able to get 24 principal components.
 
 <h2 id='ML-Tricks-With-Spark'>Model Evaluation</h2>
 
+###Confusion Matrix
+
+A **Confusion Matrix** is a table that categorize predictions and it's real class. In Mllib, for multiclass classification, we can use this metrics to evaluate our model:
+
+intact code can be seen in *evaluation.scala*, here, we use **logistic classifier** and **iris** dataset to predict the species of flowers.
+
+```scala
+val metrics = new MulticlassMetrics(predictionAndLabels)
+```
+
+###Precision and Recall
+
+This measure is able to provide an indication of how interesting and relevant a model's result are.
+
+**Precision** is the percentage of positive values that are truely positive, that is, precision equals the number of true positive divide the sum of true positive and false positive.
+
+On the ohter hand, **Recall** indicates how complete the result are, that is the number of true positive over the sum of true positive and false negative.
+
+```scala
+val precision = metrics.precision
+val recall = metrics.recall
+```
+
+###F-Score
+
+As it seems to be a bit messy if we use both Precision and Recall, F-Score is a combination of these two metrics into a single number.
+
+F-measure reduces model performance to a single number, it provides a convenient way to compare several models side-by-side.
+
+```scala
+val fscore = metrics.fMeasure
+```
+
+###ROC and AUC
+
+The ROC curve (Receiver Operating Characteristic) is commonly used to examine the tradeoff between the detection of true positives while avoiding false positives. The closer the curve is to the perfect classifier, the area under the ROC Curve is larger (named AUC).
+
+For binary classification, in MLlib, we can implement **ROC** like this:
+
+```scala
+val roc = metrics.roc
+//area under ROC is AUC
+val auROC = metrics.areaUnderROC
+```
+
 <h2 id='Scala-Functional'>Scala Functional</h2>
 
 
